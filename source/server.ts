@@ -15,6 +15,7 @@ router.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "origin, X-Requested-With,Content-Type,Accept, Authorization"
   );
+  res.header("Cache-Control", "s-max-age=1, stale-while-revalidate");
 
   if (req.method === "OPTION") {
     res.header("Access-Control-Allow-Methods", "GET PATCH DELETE POST");
@@ -33,7 +34,7 @@ router.use((req, res, next) => {
   return res.status(404).json({
     message: error.message,
     params: req.params,
-    query: req.query
+    query: req.query,
   });
 });
 

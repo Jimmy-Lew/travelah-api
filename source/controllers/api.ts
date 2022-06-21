@@ -76,7 +76,7 @@ const getFavouriteStops = async (
   next: NextFunction
 ) => {
   let busStops: [] = [];
-  
+
   // @ts-ignore
   const favouritesList = req.query.favs;
 
@@ -95,7 +95,7 @@ const getFavouriteStops = async (
   }
 
   return res.status(200).json({
-    data: busStops
+    data: busStops,
   });
 };
 
@@ -104,7 +104,6 @@ const getBusTimings = async (
   res: Response,
   next: NextFunction
 ) => {
-
   const busStopCode = req.query.code;
 
   let result: AxiosResponse = await axios.get(
@@ -171,7 +170,7 @@ const getBusTimings = async (
   });
 
   return res.status(200).json({
-    data: serviceList
+    data: serviceList,
   });
 };
 
