@@ -67,8 +67,13 @@ const getNearbyStops = async (
 };
 
 // TODO:
-const getFavouriteStops = async (favouritesList: String[]) => {
+const getFavouriteStops = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let busStops: [] = [];
+  const favouritesList = req.params.favs
 
   for (const code of favouritesList) {
     const name = await getBusStopName(code);
@@ -83,7 +88,9 @@ const getFavouriteStops = async (favouritesList: String[]) => {
     busStops.push(busStop);
   }
 
-  return busStops;
+  return res.status(200).json({
+    message: busStops
+  });
 };
 
 // #region Internal methods
@@ -196,4 +203,4 @@ const getBusTimings = async (busStopCode: String) => {
 
 // test()
 
-export default { getNearbyStops };
+export default { getNearbyStops, getFavouriteStops };
