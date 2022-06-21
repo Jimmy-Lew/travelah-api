@@ -77,6 +77,9 @@ const getFavouriteStops = async (
   // @ts-ignore
   const favouritesList = JSON.parse(req.query.favs);
 
+  console.log(req.query.favs);
+  console.log(favouritesList);
+
   for (const code of favouritesList) {
     const name = await getBusStopName(code);
     const serviceList = await getBusTimings(code);
