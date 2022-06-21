@@ -28,8 +28,9 @@ interface Location {
   lat: String;
   lng: String;
 }
+
 // @ts-ignore
-const busStopJSON = JSON.parse(fs.readFileSync("build/assets/stops.json"));
+// const busStopJSON = JSON.parse(fs.readFileSync("build/assets/stops.json"));
 
 const getNearbyStops = async (
   req: Request,
@@ -70,14 +71,16 @@ const getNearbyStops = async (
 
 const getBusStopCode = async (busStopName: String) => {
   // @ts-ignore
+  const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
   let busStopCode = "";
 
   // @ts-ignore
-  busStopJSON.forEach((busStop: any) => {
+  for(const busStop of data){
     if (busStopName.match(busStop.name)) {
       busStopCode = busStop.number;
+      break;
     }
-  });
+  }
 
   return busStopCode;
 };
