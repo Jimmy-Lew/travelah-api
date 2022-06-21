@@ -31,7 +31,7 @@ router.use((req, res, next) => {
   return res.status(404).json({
     message: error.message,
     params: req.params,
-    query: req.query
+    query: req.query.favs
   });
 });
 
