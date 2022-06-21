@@ -73,7 +73,7 @@ const getFavouriteStops = async (
   next: NextFunction
 ) => {
   let busStops: [] = [];
-  const favouritesList = req.params.favs
+  const favouritesList = JSON.parse(req.params.favs)
 
   for (const code of favouritesList) {
     const name = await getBusStopName(code);
