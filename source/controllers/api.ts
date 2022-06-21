@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import axios, { AxiosResponse } from "axios";
 import * as fs from "fs";
 
+// @ts-ignore
+const jsonData = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+
 interface BusStop {
   location: {
     lat: number;
@@ -99,11 +102,11 @@ const getFavouriteStops = async (
 // #region Internal methods
 const getBusStopName = async (busStopCode: String) => {
   // @ts-ignore
-  const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+  // const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
   let busStopName = "";
 
   // @ts-ignore
-  for (const busStop of data) {
+  for (const busStop of jsonData) {
     if (busStopCode.match(busStop.number)) {
       busStopName = busStop.name;
       break;
@@ -115,11 +118,11 @@ const getBusStopName = async (busStopCode: String) => {
 
 const getBusStopCode = async (busStopName: String) => {
   // @ts-ignore
-  const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+  // const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
   let busStopCode = "";
 
   // @ts-ignore
-  for (const busStop of data) {
+  for (const busStop of jsonData) {
     if (busStopName.match(busStop.name)) {
       busStopCode = busStop.number;
       break;
