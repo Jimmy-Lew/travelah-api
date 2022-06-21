@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.get("/nearby", controller.getNearbyStops);
 router.get("/fav", controller.getFavouriteStops)
+router.get("/timings", controller.getBusTimings)
 
 export = router;
