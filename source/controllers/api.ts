@@ -29,9 +29,6 @@ interface Location {
   lng: String;
 }
 
-// @ts-ignore
-// const busStopJSON = JSON.parse(fs.readFileSync("build/assets/stops.json"));
-
 const getNearbyStops = async (
   req: Request,
   res: Response,
@@ -69,13 +66,50 @@ const getNearbyStops = async (
   });
 };
 
+// TODO:
+const getFavouriteStops = async (favouritesList: String[]) => {
+  let busStops: [] = [];
+
+  for (const code of favouritesList) {
+    const name = await getBusStopName(code);
+    const serviceList = await getBusTimings(code);
+
+    const busStop = {
+      name: name,
+      code: code,
+      serviceList: serviceList,
+    };
+    // @ts-ignore
+    busStops.push(busStop);
+  }
+
+  return busStops;
+};
+
+// #region Internal methods
+const getBusStopName = async (busStopCode: String) => {
+  // @ts-ignore
+  const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+  let busStopName = "";
+
+  // @ts-ignore
+  for (const busStop of data) {
+    if (busStopCode.match(busStop.number)) {
+      busStopName = busStop.name;
+      break;
+    }
+  }
+
+  return busStopName;
+};
+
 const getBusStopCode = async (busStopName: String) => {
   // @ts-ignore
   const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
   let busStopCode = "";
 
   // @ts-ignore
-  for(const busStop of data){
+  for (const busStop of data) {
     if (busStopName.match(busStop.name)) {
       busStopCode = busStop.number;
       break;
@@ -152,24 +186,12 @@ const getBusTimings = async (busStopCode: String) => {
   return serviceList;
 };
 
-// async function test(){
-//     const loc: Location = {
-//         lat: "1.3918577281406086",
-//         lng: "103.75166620390048"
-//     }
-//     const busStops = await getNearbyStops(loc);
-//     busStops.forEach(busStop => {
-//         console.log(busStop);
-//     })
+// #endregion
 
-//     // const code = "12101";
-//     // const busList = await getBusTimings(code);
-//     // busList.forEach(bus => {
-//     //     console.log(bus);
-//     // })
-
-//     // const code = await getBusStopCode("Ngee Ann Poly");
-//     // console.log(code);
+// async function test() {
+//   const data = await getFavouriteStops(["84469", "46821"]);
+//   // const data = await getBusStopCode("Blk 703")
+//   console.log(data);
 // }
 
 // test()

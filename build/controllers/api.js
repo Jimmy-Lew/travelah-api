@@ -37,20 +37,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const fs = __importStar(require("fs"));
-class busStopRepo {
-    constructor() {
-        // @ts-ignore
-        this.data = JSON.parse(fs.readFileSync("build/assets/stops.json"));
-    }
-    getData() {
-        return this.data;
-    }
-    static getInstance() {
-        return busStopRepo.instance === null
-            ? (busStopRepo.instance = new busStopRepo())
-            : busStopRepo.instance;
-    }
-}
 const getNearbyStops = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const location = {
         lat: req.query.lat,
@@ -75,18 +61,47 @@ const getNearbyStops = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         data: busStops,
     });
 });
+// TODO:
+const getFavouriteStops = (favouritesList) => __awaiter(void 0, void 0, void 0, function* () {
+    let busStops = [];
+    for (const code of favouritesList) {
+        const name = yield getBusStopName(code);
+        const serviceList = yield getBusTimings(code);
+        const busStop = {
+            name: name,
+            code: code,
+            serviceList: serviceList,
+        };
+        // @ts-ignore
+        busStops.push(busStop);
+    }
+    return busStops;
+});
+// #region Internal methods
+const getBusStopName = (busStopCode) => __awaiter(void 0, void 0, void 0, function* () {
+    // @ts-ignore
+    const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+    let busStopName = "";
+    // @ts-ignore
+    for (const busStop of data) {
+        if (busStopCode.match(busStop.number)) {
+            busStopName = busStop.name;
+            break;
+        }
+    }
+    return busStopName;
+});
 const getBusStopCode = (busStopName) => __awaiter(void 0, void 0, void 0, function* () {
     // @ts-ignore
+    const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
     let busStopCode = "";
     // @ts-ignore
-    busStopRepo
-        .getInstance()
-        .getData()
-        .forEach((busStop) => {
+    for (const busStop of data) {
         if (busStopName.match(busStop.name)) {
             busStopCode = busStop.number;
+            break;
         }
-    });
+    }
     return busStopCode;
 });
 const getBusTimings = (busStopCode) => __awaiter(void 0, void 0, void 0, function* () {
@@ -139,22 +154,11 @@ const getBusTimings = (busStopCode) => __awaiter(void 0, void 0, void 0, functio
     });
     return serviceList;
 });
-// async function test(){
-//     const loc: Location = {
-//         lat: "1.3918577281406086",
-//         lng: "103.75166620390048"
-//     }
-//     const busStops = await getNearbyStops(loc);
-//     busStops.forEach(busStop => {
-//         console.log(busStop);
-//     })
-//     // const code = "12101";
-//     // const busList = await getBusTimings(code);
-//     // busList.forEach(bus => {
-//     //     console.log(bus);
-//     // })
-//     // const code = await getBusStopCode("Ngee Ann Poly");
-//     // console.log(code);
+// #endregion
+// async function test() {
+//   const data = await getFavouriteStops(["84469", "46821"]);
+//   // const data = await getBusStopCode("Blk 703")
+//   console.log(data);
 // }
 // test()
 exports.default = { getNearbyStops };
