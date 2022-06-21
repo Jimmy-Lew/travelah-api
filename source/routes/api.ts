@@ -3,6 +3,6 @@ import controller from "../controllers/api";
 const router = express.Router();
 
 router.get("/nearby", controller.getNearbyStops);
-router.get("/favs", controller.getFavouriteStops)
+router.get("/fav", controller.getFavouriteStops)
 
 export = router;

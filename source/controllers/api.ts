@@ -75,11 +75,10 @@ const getFavouriteStops = async (
   let busStops: [] = [];
   
   // @ts-ignore
-  const favouritesList = JSON.parse(req.query.favs);
+  const favouritesList = req.query.favs;
 
+  // @ts-ignore
   for (let code of favouritesList) {
-    code = code.slice(0, -1)
-
     const name = await getBusStopName(code);
     const serviceList = await getBusTimings(code);
 
@@ -93,7 +92,7 @@ const getFavouriteStops = async (
   }
 
   return res.status(200).json({
-    message: busStops
+    data: busStops
   });
 };
 
