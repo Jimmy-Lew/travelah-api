@@ -63,7 +63,7 @@ const getNearbyStops = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 });
 const getBusStopCode = (busStopName) => __awaiter(void 0, void 0, void 0, function* () {
     // @ts-ignore
-    const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+    const data = JSON.parse(fs.readFileSync("build/assets/stops.json"));
     let busStopCode = "";
     // @ts-ignore
     data.forEach((busStop) => {
