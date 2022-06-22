@@ -42,7 +42,7 @@ const getNearbyStops = async (
     lng: req.query.lng,
   };
 
-  console.log(req.query.lat);
+  // console.log(req.query.lat);
 
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
@@ -224,25 +224,9 @@ const getBusTimings = async (
       const resBus = item[busNo];
       if (resBus.EstimatedArrival.length <= 0) continue;
 
-      const adjustForTimeZone = (d: Date, offset: number): Date => {
-        var date = d.toISOString();
-        var targetTime = new Date(date);
-        var timeZoneFromDB = offset; //time zone value from database
-        //get the timezone offset from local time in minutes
-        var tzDifference = timeZoneFromDB * 60 + targetTime.getTimezoneOffset();
-        //convert the offset to milliseconds, add to targetTime, and make a new Date
-        var offsetTime = new Date(
-          targetTime.getTime() + tzDifference * 60 * 1000
-        );
-        return offsetTime;
-      };
-
       const estimatedTime = new Date(resBus.EstimatedArrival);
-      const adjustedTime = adjustForTimeZone(estimatedTime, 8.5);
 
-      const estTimeInMinutes = new Date(
-        Math.abs(adjustedTime.getTime() - new Date().getTime())
-      ).getMinutes();
+      const estTimeInMinutes = Math.round((estimatedTime.getTime() - new Date().getTime()) / 60000)
       const estTime = estTimeInMinutes < 2 ? "Arr" : `${estTimeInMinutes} mins`;
 
       const bus: Bus = {
@@ -326,25 +310,8 @@ const IGetBusTimings = async (busStopCode: String) => {
       const resBus = item[busNo];
       if (resBus.EstimatedArrival.length <= 0) continue;
 
-      const adjustForTimeZone = (d: Date, offset: number): Date => {
-        var date = d.toISOString();
-        var targetTime = new Date(date);
-        var timeZoneFromDB = offset; //time zone value from database
-        //get the timezone offset from local time in minutes
-        var tzDifference = timeZoneFromDB * 60 + targetTime.getTimezoneOffset();
-        //convert the offset to milliseconds, add to targetTime, and make a new Date
-        var offsetTime = new Date(
-          targetTime.getTime() + tzDifference * 60 * 1000
-        );
-        return offsetTime;
-      };
-
       const estimatedTime = new Date(resBus.EstimatedArrival);
-      const adjustedTime = adjustForTimeZone(estimatedTime, 8.5);
-
-      const estTimeInMinutes = new Date(
-        Math.abs(adjustedTime.getTime() - new Date().getTime())
-      ).getMinutes();
+      const estTimeInMinutes = Math.round((estimatedTime.getTime() - new Date().getTime()) / 60000)
       const estTime = estTimeInMinutes < 2 ? "Arr" : `${estTimeInMinutes} mins`;
 
       const bus: Bus = {
