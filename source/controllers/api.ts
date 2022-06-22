@@ -64,13 +64,12 @@ const getNearbyStops = async (
     busStops.push(busStop);
   }
 
-  return res.status(200).json({
-    data: busStops,
-  });
+  return res.status(200).json(
+    busStops
+  );
 };
 
-// TODO:
-const getFavouriteStops = async (
+const getStopsByName = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -78,26 +77,85 @@ const getFavouriteStops = async (
   let busStops: [] = [];
 
   // @ts-ignore
-  const favouritesList = req.query.favs;
+  const queryList = req.query.stops;
 
   // @ts-ignore
-  for (let code of favouritesList) {
+  for (let name of queryList) {
+    const code = await getBusStopCode(name);
+    const serviceList = await IGetBusTimings(code);
+
+    const busStop = {
+      name: name,
+      code: code,
+      serviceList: serviceList
+    };
+    // @ts-ignore
+    busStops.push(busStop);
+  }
+
+  return res.status(200).json(
+    busStops,
+  );
+}
+
+const getStopsByCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let busStops: [] = [];
+
+  // @ts-ignore
+  const queryList = req.query.stops;
+
+  // @ts-ignore
+  for (let code of queryList) {
     const name = await getBusStopName(code);
     const serviceList = await IGetBusTimings(code);
 
     const busStop = {
       name: name,
       code: code,
-      serviceList: serviceList,
+      serviceList: serviceList
     };
     // @ts-ignore
     busStops.push(busStop);
   }
 
-  return res.status(200).json({
-    data: busStops,
-  });
-};
+  return res.status(200).json(
+    busStops,
+  );
+}
+
+// TODO:
+// const getFavouriteStops = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   let busStops: [] = [];
+
+//   // @ts-ignore
+//   const favouritesList = req.query.favs;
+
+//   // @ts-ignore
+//   for (let code of favouritesList) {
+//     const name = await getBusStopName(code);
+//     const serviceList = await IGetBusTimings(code);
+
+//     const busStop = {
+//       name: name,
+//       code: code,
+//       serviceList: serviceList,
+//     };
+//     // @ts-ignore
+//     busStops.push(busStop);
+//   }
+
+//   return res.status(200).json({
+//     data: busStops,
+//   });
+// };
 
 const getBusTimings = async (
   req: Request,
@@ -198,7 +256,7 @@ const getBusStopCode = async (busStopName: String) => {
 
   // @ts-ignore
   for (const busStop of jsonData) {
-    if (busStopName.match(busStop.name)) {
+    if (busStopName === busStop.name) {
       busStopCode = busStop.number;
       break;
     }
@@ -283,4 +341,4 @@ const IGetBusTimings = async (busStopCode: String) => {
 
 // test()
 
-export default { getNearbyStops, getFavouriteStops, getBusTimings };
+export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode };

@@ -59,31 +59,69 @@ const getNearbyStops = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         // @ts-ignore
         busStops.push(busStop);
     }
-    return res.status(200).json({
-        data: busStops,
-    });
+    return res.status(200).json(busStops);
 });
-// TODO:
-const getFavouriteStops = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getStopsByName = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let busStops = [];
     // @ts-ignore
-    const favouritesList = req.query.favs;
+    const queryList = req.query.stops;
     // @ts-ignore
-    for (let code of favouritesList) {
+    for (let name of queryList) {
+        const code = yield getBusStopCode(name);
+        const serviceList = yield IGetBusTimings(code);
+        const busStop = {
+            name: name,
+            code: code,
+            serviceList: serviceList
+        };
+        // @ts-ignore
+        busStops.push(busStop);
+    }
+    return res.status(200).json(busStops);
+});
+const getStopsByCode = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let busStops = [];
+    // @ts-ignore
+    const queryList = req.query.stops;
+    // @ts-ignore
+    for (let code of queryList) {
         const name = yield getBusStopName(code);
         const serviceList = yield IGetBusTimings(code);
         const busStop = {
             name: name,
             code: code,
-            serviceList: serviceList,
+            serviceList: serviceList
         };
         // @ts-ignore
         busStops.push(busStop);
     }
-    return res.status(200).json({
-        data: busStops,
-    });
+    return res.status(200).json(busStops);
 });
+// TODO:
+// const getFavouriteStops = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   let busStops: [] = [];
+//   // @ts-ignore
+//   const favouritesList = req.query.favs;
+//   // @ts-ignore
+//   for (let code of favouritesList) {
+//     const name = await getBusStopName(code);
+//     const serviceList = await IGetBusTimings(code);
+//     const busStop = {
+//       name: name,
+//       code: code,
+//       serviceList: serviceList,
+//     };
+//     // @ts-ignore
+//     busStops.push(busStop);
+//   }
+//   return res.status(200).json({
+//     data: busStops,
+//   });
+// };
 const getBusTimings = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const busStopCode = req.query.code;
     let result = yield axios_1.default.get(`http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${busStopCode}`, {
@@ -157,7 +195,7 @@ const getBusStopCode = (busStopName) => __awaiter(void 0, void 0, void 0, functi
     let busStopCode = "";
     // @ts-ignore
     for (const busStop of jsonData) {
-        if (busStopName.match(busStop.name)) {
+        if (busStopName === busStop.name) {
             busStopCode = busStop.number;
             break;
         }
@@ -221,4 +259,4 @@ const IGetBusTimings = (busStopCode) => __awaiter(void 0, void 0, void 0, functi
 //   console.log(data);
 // }
 // test()
-exports.default = { getNearbyStops, getFavouriteStops, getBusTimings };
+exports.default = { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode };
