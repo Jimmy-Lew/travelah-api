@@ -83,6 +83,9 @@ const getStopsByName = async (
     // @ts-ignore
     for (let name of query) {
       // @ts-ignore
+      if(name === "root") continue;
+
+      // @ts-ignore
       const code = await getBusStopCode(name);
       const serviceList = await IGetBusTimings(code);
 
