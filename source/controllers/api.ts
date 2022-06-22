@@ -77,15 +77,31 @@ const getStopsByName = async (
   let busStops: [] = [];
 
   // @ts-ignore
-  const queryList = req.query.stops;
+  const query = req.query.stops;
 
-  // @ts-ignore
-  for (let name of queryList) {
-    const code = await getBusStopCode(name);
+  if(Array.isArray(query)){  
+    // @ts-ignore
+    for (let name of query) {
+      // @ts-ignore
+      const code = await getBusStopCode(name);
+      const serviceList = await IGetBusTimings(code);
+
+      const busStop = {
+        name: name,
+        code: code,
+        serviceList: serviceList
+      };
+      // @ts-ignore
+      busStops.push(busStop);
+    }
+  }
+  else{
+    // @ts-ignore
+    const code = await getBusStopCode(query);
     const serviceList = await IGetBusTimings(code);
 
     const busStop = {
-      name: name,
+      name: query,
       code: code,
       serviceList: serviceList
     };
@@ -106,16 +122,34 @@ const getStopsByCode = async (
   let busStops: [] = [];
 
   // @ts-ignore
-  const queryList = req.query.stops;
+  const query = req.query.stops;
 
-  // @ts-ignore
-  for (let code of queryList) {
-    const name = await getBusStopName(code);
-    const serviceList = await IGetBusTimings(code);
+  if(Array.isArray(query)){
+    // @ts-ignore
+    for (let code of query) {
+      // @ts-ignore
+      const name = await getBusStopName(code);
+      // @ts-ignore
+      const serviceList = await IGetBusTimings(code);
+
+      const busStop = {
+        name: name,
+        code: code,
+        serviceList: serviceList
+      };
+      // @ts-ignore
+      busStops.push(busStop);
+    }
+  }
+  else{
+    // @ts-ignore
+    const name = await getBusStopName(query);
+    // @ts-ignore
+    const serviceList = await IGetBusTimings(query);
 
     const busStop = {
       name: name,
-      code: code,
+      code: query,
       serviceList: serviceList
     };
     // @ts-ignore
