@@ -5,33 +5,6 @@ import * as fs from "fs";
 // @ts-ignore
 const jsonData = JSON.parse(fs.readFileSync("source/assets/stops.json"));
 
-interface BusStop {
-  location: {
-    lat: number;
-    lng: number;
-  };
-  name: String;
-  code: String;
-  serviceList: [Service];
-}
-
-interface Service {
-  serviceNo: String;
-  busList: [Bus];
-}
-
-interface Bus {
-  estimatedTime: String;
-  load: String;
-  feature: String;
-  type: String;
-}
-
-interface Location {
-  lat: String;
-  lng: String;
-}
-
 const getNearbyStops = async (
   req: Request,
   res: Response,
@@ -42,9 +15,13 @@ const getNearbyStops = async (
     lng: req.query.lng,
   };
 
+  console.log(req.query.lat);
+
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
   );
+
+  console.log(result.status);
 
   let busStops: [] = [];
 
@@ -197,7 +174,7 @@ const getBusTimings = async (
       const estTimeInMinutes = Math.round((estimatedTime.getTime() - new Date().getTime()) / 60000)
       const estTime = estTimeInMinutes < 2 ? "Arr" : `${estTimeInMinutes} mins`;
 
-      const bus: Bus = {
+      const bus = {
         estimatedTime: estTime,
         load: resBus.Load,
         feature: resBus.Feature,
@@ -266,6 +243,8 @@ const IGetBusTimings = async (busStopCode: String) => {
     }
   );
 
+  console.log(`LTA API: ${result.status}`);
+
   let serviceList: [] = [];
 
   const services = result.data.Services;
@@ -284,7 +263,7 @@ const IGetBusTimings = async (busStopCode: String) => {
       const estTimeInMinutes = Math.round((estimatedTime.getTime() - new Date().getTime()) / 60000)
       const estTime = estTimeInMinutes < 2 ? "Arr" : `${estTimeInMinutes} mins`;
 
-      const bus: Bus = {
+      const bus = {
         estimatedTime: estTime,
         load: resBus.Load,
         feature: resBus.Feature,
@@ -305,14 +284,6 @@ const IGetBusTimings = async (busStopCode: String) => {
 
   return serviceList;
 };
-// #endregion
-
-// async function test() {
-//   const data = await getFavouriteStops(["84469", "46821"]);
-//   // const data = await getBusStopCode("Blk 703")
-//   console.log(data);
-// }
-
-// test()
+// #endregion 
 
 export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode };
