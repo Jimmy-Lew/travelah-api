@@ -42,8 +42,6 @@ const getNearbyStops = async (
     lng: req.query.lng,
   };
 
-  // console.log(req.query.lat);
-
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
   );
@@ -164,36 +162,6 @@ const getStopsByCode = async (
   );
 }
 
-// TODO:
-// const getFavouriteStops = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   let busStops: [] = [];
-
-//   // @ts-ignore
-//   const favouritesList = req.query.favs;
-
-//   // @ts-ignore
-//   for (let code of favouritesList) {
-//     const name = await getBusStopName(code);
-//     const serviceList = await IGetBusTimings(code);
-
-//     const busStop = {
-//       name: name,
-//       code: code,
-//       serviceList: serviceList,
-//     };
-//     // @ts-ignore
-//     busStops.push(busStop);
-//   }
-
-//   return res.status(200).json({
-//     data: busStops,
-//   });
-// };
-
 const getBusTimings = async (
   req: Request,
   res: Response,
@@ -287,6 +255,8 @@ const getBusStopCode = async (busStopName: String) => {
 };
 
 const IGetBusTimings = async (busStopCode: String) => {
+  if (busStopCode.length <= 0) return;
+
   let result: AxiosResponse = await axios.get(
     `http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${busStopCode}`,
     {
@@ -300,7 +270,7 @@ const IGetBusTimings = async (busStopCode: String) => {
 
   const services = result.data.Services;
 
-  if (services.length < 0) return;
+  if (services.length <= 0) return;
 
   services.forEach((item: any) => {
     const serviceNo = item.ServiceNo;
