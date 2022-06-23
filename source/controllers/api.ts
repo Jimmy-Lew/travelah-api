@@ -15,8 +15,6 @@ const getNearbyStops = async (
     lng: req.query.lng,
   };
 
-  console.log(req.query.lat);
-
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
   );
@@ -249,7 +247,7 @@ const IGetBusTimings = async (busStopCode: String) => {
 
   const services = result.data.Services;
 
-  if (services.length <= 0) return;
+  if (services.length <= 0) return serviceList;
 
   services.forEach((item: any) => {
     const serviceNo = item.ServiceNo;
