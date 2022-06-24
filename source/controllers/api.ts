@@ -5,6 +5,11 @@ import * as fs from "fs";
 // @ts-ignore
 const jsonData = JSON.parse(fs.readFileSync("source/assets/stops.json"));
 
+interface Location {
+  lat: number
+  lng: number
+}
+
 const getNearbyStops = async (
   req: Request,
   res: Response,
@@ -15,6 +20,9 @@ const getNearbyStops = async (
     lng: req.query.lng,
   };
 
+  // @ts-ignore
+  const isRaining : boolean = await IIsRaining(location);
+
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
   );
@@ -24,14 +32,15 @@ const getNearbyStops = async (
   let busStops: [] = [];
 
   for (const item of result.data.results) {
-    const code = await getBusStopCode(item.name);
+    const code = await IGetBusStopCode(item.name);
     const serviceList = await IGetBusTimings(code);
-
+    
     const busStop = {
       location: item.geometry.location,
       name: item.name,
       code: code,
       serviceList: serviceList,
+      isRaining: isRaining
     };
     // @ts-ignore
     busStops.push(busStop);
@@ -56,16 +65,24 @@ const getStopsByName = async (
     // @ts-ignore
     for (let name of query) {
       // @ts-ignore
-      if(name === "root") continue;
+      if(name === "root") {
+        const busStop = {
+          name: name,
+          code: "empty",
+          serviceList: [],
+        };
+        // @ts-ignore
+        busStops.push(busStop);
+      }
 
       // @ts-ignore
-      const code = await getBusStopCode(name);
+      const code = await IGetBusStopCode(name);
       const serviceList = await IGetBusTimings(code);
 
       const busStop = {
         name: name,
         code: code,
-        serviceList: serviceList
+        serviceList: serviceList,
       };
       // @ts-ignore
       busStops.push(busStop);
@@ -73,13 +90,13 @@ const getStopsByName = async (
   }
   else{
     // @ts-ignore
-    const code = await getBusStopCode(query);
+    const code = await IGetBusStopCode(query);
     const serviceList = await IGetBusTimings(code);
 
     const busStop = {
       name: query,
       code: code,
-      serviceList: serviceList
+      serviceList: serviceList,
     };
     // @ts-ignore
     busStops.push(busStop);
@@ -104,7 +121,7 @@ const getStopsByCode = async (
     // @ts-ignore
     for (let code of query) {
       // @ts-ignore
-      const name = await getBusStopName(code);
+      const name = await IGetBusStopName(code);
       // @ts-ignore
       const serviceList = await IGetBusTimings(code);
 
@@ -119,7 +136,7 @@ const getStopsByCode = async (
   }
   else{
     // @ts-ignore
-    const name = await getBusStopName(query);
+    const name = await IGetBusStopName(query);
     // @ts-ignore
     const serviceList = await IGetBusTimings(query);
 
@@ -197,7 +214,19 @@ const getBusTimings = async (
 };
 
 // #region Internal methods
-const getBusStopName = async (busStopCode: String) => {
+const IIsRaining = async (location: Location) => {
+  let result: AxiosResponse = await axios.get(`https://weatherbit-v1-mashape.p.rapidapi.com/current?lon=${location.lng}&lat=${location.lat}&units=metric&lang=en`,
+  {
+    headers: {
+      "X-RapidAPI-Key": "db09627fefmshbb7e0a02975ba60p1e9b1fjsn7a01a15d0b4c",
+      "X-RapidAPI-Host": "weatherbit-v1-mashape.p.rapidapi.com"
+    }
+  })
+
+  return result.data.data[0].precip > 0;
+};
+
+const IGetBusStopName = async (busStopCode: String) => {
   // @ts-ignore
   // const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
   let busStopName = "";
@@ -213,7 +242,7 @@ const getBusStopName = async (busStopCode: String) => {
   return busStopName;
 };
 
-const getBusStopCode = async (busStopName: String) => {
+const IGetBusStopCode = async (busStopName: String) => {
   // @ts-ignore
   // const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
   let busStopCode = "";
@@ -240,8 +269,6 @@ const IGetBusTimings = async (busStopCode: String) => {
       },
     }
   );
-
-  console.log(`LTA API: ${result.status}`);
 
   let serviceList: [] = [];
 
