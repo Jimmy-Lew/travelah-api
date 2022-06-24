@@ -65,17 +65,7 @@ const getStopsByName = async (
     // @ts-ignore
     for (let name of query) {
       // @ts-ignore
-      if(name === "root") {
-        const busStop = {
-          name: name,
-          code: "empty",
-          serviceList: [],
-        };
-        // @ts-ignore
-        busStops.push(busStop);
-
-        continue
-      }
+      if(name === "root") continue;
 
       // @ts-ignore
       const code = await IGetBusStopCode(name);
@@ -93,13 +83,7 @@ const getStopsByName = async (
   else{
     // @ts-ignore
     if(query === "root") {
-        const busStop = {
-          name: query,
-          code: "empty",
-          serviceList: [],
-        };
-        // @ts-ignore
-        busStops.push(busStop);
+      
     }    
     else {
       // @ts-ignore
