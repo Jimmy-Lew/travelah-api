@@ -73,6 +73,8 @@ const getStopsByName = async (
         };
         // @ts-ignore
         busStops.push(busStop);
+
+        continue
       }
 
       // @ts-ignore
@@ -90,16 +92,28 @@ const getStopsByName = async (
   }
   else{
     // @ts-ignore
-    const code = await IGetBusStopCode(query);
-    const serviceList = await IGetBusTimings(code);
+    if(query === "root") {
+        const busStop = {
+          name: query,
+          code: "empty",
+          serviceList: [],
+        };
+        // @ts-ignore
+        busStops.push(busStop);
+    }    
+    else {
+      // @ts-ignore
+      const code = await IGetBusStopCode(query);
+      const serviceList = await IGetBusTimings(code);
 
-    const busStop = {
-      name: query,
-      code: code,
-      serviceList: serviceList,
-    };
-    // @ts-ignore
-    busStops.push(busStop);
+      const busStop = {
+        name: query,
+        code: code,
+        serviceList: serviceList,
+      };
+      // @ts-ignore
+      busStops.push(busStop);
+    }
   }
 
   return res.status(200).json(
