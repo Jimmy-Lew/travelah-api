@@ -85,12 +85,10 @@ const getStopsByName = async (
   }
   else{
     // @ts-ignore
-    if(query === "root") {
-      
-    }    
+    const code = await IGetBusStopCode(query);
+    if(code === "") { }    
     else {
       // @ts-ignore
-      const code = await IGetBusStopCode(query);
       const serviceList = await IGetBusTimings(code);
 
       const busStop = {
