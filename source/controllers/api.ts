@@ -21,7 +21,7 @@ const getNearbyStops = async (
   };
 
   // @ts-ignore
-  const isRaining : boolean = await IIsRaining(location);
+  // const isRaining : boolean = await IIsRaining(location);
 
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
@@ -40,7 +40,7 @@ const getNearbyStops = async (
       name: item.name,
       code: code,
       serviceList: serviceList,
-      isRaining: isRaining
+      // isRaining: isRaining
     };
     // @ts-ignore
     busStops.push(busStop);
