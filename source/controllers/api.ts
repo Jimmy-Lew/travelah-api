@@ -33,6 +33,9 @@ const getNearbyStops = async (
 
   for (const item of result.data.results) {
     const code = await IGetBusStopCode(item.name);
+
+    if (code === "") continue;
+
     const serviceList = await IGetBusTimings(code);
     
     const busStop = {
