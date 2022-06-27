@@ -207,9 +207,7 @@ const getBusTimings = async (
     serviceList.push(service);
   });
 
-  return res.status(200).json({
-    data: serviceList,
-  });
+  return res.status(200).json(serviceList);
 };
 
 // #region Internal methods
@@ -311,3 +309,5 @@ const IGetBusTimings = async (busStopCode: String) => {
 // #endregion 
 
 export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode };
+
+// Directions API KEY AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA
