@@ -46,4 +46,4 @@ httpServer.listen(PORT, () =>
 
 setInterval(() => {
   http.get(`https://travelah-api.onrender.com/`);
-}, 280000);
+}, 3000000);
