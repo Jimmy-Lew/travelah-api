@@ -2,14 +2,26 @@ import { Request, Response, NextFunction } from "express";
 import axios, { AxiosResponse } from "axios";
 import * as fs from "fs";
 
-// @ts-ignore
-const jsonData = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+const IConvertJSONToArray = () => {
+  // @ts-ignore
+  const json = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+  let result = []
+
+  for (const busStop of json) {
+    result.push([busStop.number, busStop.name])
+  }
+
+  return result
+}
+
+const jsonArr = IConvertJSONToArray();
 
 interface Location {
   lat: number
   lng: number
 }
 
+// #region Bus Timing API
 const getNearbyStops = async (
   req: Request,
   res: Response,
@@ -20,19 +32,14 @@ const getNearbyStops = async (
     lng: req.query.lng,
   };
 
-  // @ts-ignore
-  // const isRaining : boolean = await IIsRaining(location);
-
   let result: AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
   );
 
-  console.log(result.status);
-
   let busStops: [] = [];
 
   for (const item of result.data.results) {
-    const code = await IGetBusStopCode(item.name);
+    const code = IGetBusStopCode(item.name);
 
     if (code === "") continue;
 
@@ -43,7 +50,6 @@ const getNearbyStops = async (
       name: item.name,
       code: code,
       serviceList: serviceList,
-      // isRaining: isRaining
     };
     // @ts-ignore
     busStops.push(busStop);
@@ -71,7 +77,7 @@ const getStopsByName = async (
       if(name === "root") continue;
 
       // @ts-ignore
-      const code = await IGetBusStopCode(name);
+      const code = IGetBusStopCode(name);
       const serviceList = await IGetBusTimings(code);
 
       const busStop = {
@@ -85,7 +91,7 @@ const getStopsByName = async (
   }
   else{
     // @ts-ignore
-    const code = await IGetBusStopCode(query);
+    const code = IGetBusStopCode(query);
     if(code === "") { }    
     else {
       // @ts-ignore
@@ -120,7 +126,7 @@ const getStopsByCode = async (
     // @ts-ignore
     for (let code of query) {
       // @ts-ignore
-      const name = await IGetBusStopName(code);
+      const name = IGetBusStopName(code);
       // @ts-ignore
       const serviceList = await IGetBusTimings(code);
 
@@ -135,7 +141,7 @@ const getStopsByCode = async (
   }
   else{
     // @ts-ignore
-    const name = await IGetBusStopName(query);
+    const name = IGetBusStopName(query);
     // @ts-ignore
     const serviceList = await IGetBusTimings(query);
 
@@ -209,50 +215,115 @@ const getBusTimings = async (
 
   return res.status(200).json(serviceList);
 };
+// #endregion
+
+// #region Routes API
+const getRoute = async(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // @ts-ignore
+  const originStringArray = req.query.origin.split(",");
+  // @ts-ignore
+  const destinationStringArray = req.query.destination.split(",");
+
+  const origin = {
+    lat: originStringArray[0],
+    lng: originStringArray[1]
+  }
+  
+  const dest = {
+    lat: destinationStringArray[0],
+    lng: destinationStringArray[1]
+  }
+
+  let result : AxiosResponse = await axios.get(
+    `https://maps.googleapis.com/maps/api/directions/json`, {
+      params: {
+        origin: `${origin.lat} ${origin.lng}`,
+        destination: `${dest.lat} ${dest.lng}`,
+        key: "AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA",
+        alternatives: true,
+        mode: "transit",
+        units: "metric"
+      }
+    }
+  )
+
+  let routeList : [] = [];
+  let legList : [] = [];
+  let stepList : [] = [];
+
+  for (const routeItem of result.data.routes)
+  {
+    legList = [];
+    for (const legItem of routeItem.legs)
+    { 
+      stepList = [];
+      for (const stepItem of legItem.steps)
+      {
+        const isTransit = stepItem.travel_mode === "TRANSIT";
+        let transitDetails = {};
+
+        if (isTransit)
+        {
+          const transitDetailsRes = stepItem.transit_details
+
+          transitDetails = {
+            arrTime: transitDetailsRes.arrival_time.text,
+            from: transitDetailsRes.departure_stop.name,
+            to: transitDetailsRes.arrival_stop.name,
+            num_stops : transitDetailsRes.num_stops,
+            line: {
+              name: transitDetailsRes.line.name,
+              type: transitDetailsRes.line.vehicle.type
+            }
+          }
+        }
+
+        const step = {
+          distance: stepItem.distance.text,
+          duration: stepItem.duration.text,
+          mode: stepItem.travel_mode,
+          details : transitDetails
+        }
+        
+        //@ts-ignore
+        stepList.push(step);
+      }
+
+      const leg = {
+        dptTime : legItem.departure_time.text,
+        arrTime : legItem.arrival_time.text,
+        distance: legItem.distance.text,
+        duration: legItem.duration.text,
+        steps: stepList
+      }
+
+      //@ts-ignore
+      legList.push(leg);
+    }
+
+    const route = {
+      legs: legList
+    }
+
+    // @ts-ignore
+    routeList.push(route);
+  }
+
+  return res.status(200).json(routeList)
+}
+// #endregion
 
 // #region Internal methods
-const IIsRaining = async (location: Location) => {
-  let result: AxiosResponse = await axios.get(`https://weatherbit-v1-mashape.p.rapidapi.com/current?lon=${location.lng}&lat=${location.lat}&units=metric&lang=en`,
-  {
-    headers: {
-      "X-RapidAPI-Key": "db09627fefmshbb7e0a02975ba60p1e9b1fjsn7a01a15d0b4c",
-      "X-RapidAPI-Host": "weatherbit-v1-mashape.p.rapidapi.com"
-    }
-  })
-
-  return result.data.data[0].precip > 0;
+const IGetBusStopName = (busStopCode: string) => {
+  return search(jsonArr, jsonArr.length, busStopCode, 0)[1]
 };
 
-const IGetBusStopName = async (busStopCode: String) => {
-  // @ts-ignore
-  // const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
-  let busStopName = "";
-
-  // @ts-ignore
-  for (const busStop of jsonData) {
-    if (busStopCode.match(busStop.number)) {
-      busStopName = busStop.name;
-      break;
-    }
-  }
-
-  return busStopName;
-};
-
-const IGetBusStopCode = async (busStopName: String) => {
-  // @ts-ignore
-  // const data = JSON.parse(fs.readFileSync("source/assets/stops.json"));
-  let busStopCode = "";
-
-  // @ts-ignore
-  for (const busStop of jsonData) {
-    if (busStopName === busStop.name) {
-      busStopCode = busStop.number;
-      break;
-    }
-  }
-
-  return busStopCode;
+const IGetBusStopCode = (busStopName: string) => {
+  return search(jsonArr, jsonArr.length, busStopName, 1)[0]
 };
 
 const IGetBusTimings = async (busStopCode: String) => {
@@ -306,8 +377,30 @@ const IGetBusTimings = async (busStopCode: String) => {
 
   return serviceList;
 };
+
+const search = (arr : string[][], n: number, target: string, targetIdx : number) => {
+  if (arr[n-1][targetIdx] === target) return arr[n-1]
+  const backup = arr[n-1]
+  arr[n-1][targetIdx] = target
+
+  for (let i = 0;; i++) {
+    if (arr[i][targetIdx] === target) {
+      arr[n-1] = backup;
+      if (i < n - 1) return arr[i]
+      return "Not Found"
+    }
+  }
+}
+
+const ping = async(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const msg = Date.now() + " Ping Received"
+  console.log(msg);
+  return res.status(200).json(msg)
+}
 // #endregion 
 
-export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode };
-
-// Directions API KEY AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA
+export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, ping};
