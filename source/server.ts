@@ -1,4 +1,4 @@
-import http from "http";
+import https from "http";
 import express, { Express } from "express";
 import morgan from "morgan";
 import routes from "./routes/api";
@@ -38,12 +38,12 @@ router.use((req, res, next) => {
   });
 });
 
-const httpServer = http.createServer(router);
+const httpServer = https.createServer(router);
 const PORT: any = process.env.PORT ?? 3000;
 httpServer.listen(PORT, () =>
   console.log(`The server is running on port ${PORT}`)
 );
 
 setInterval(() => {
-  http.get(`https://travelah-api.onrender.com/`);
+  https.get(`https://travelah-api.onrender.com/`);
 }, 3000000);
