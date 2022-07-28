@@ -265,6 +265,7 @@ const getRoute = async(
       {
         const isTransit = stepItem.travel_mode === "TRANSIT";
         let transitDetails = {};
+        let mode = stepItem.travel_mode;
 
         if (isTransit)
         {
@@ -274,13 +275,17 @@ const getRoute = async(
 
           if(transitDetailsRes.line.name.includes("Line")) 
           {
-            type = "MRT";
+            mode = "MRT";
             name = name.slice(0,-5);
           }
           if(transitDetailsRes.line.name.includes("LRT"))
           {
-            type = "LRT";
+            mode = "LRT";
             name = name.slice(0,-4);
+          }
+          if(transitDetailsRes.line.vehicle.type === "BUS")
+          {
+            mode = "BUS";
           }
 
           transitDetails = {
@@ -298,7 +303,7 @@ const getRoute = async(
         const step = {
           distance: stepItem.distance.text,
           duration: stepItem.duration.text,
-          mode: stepItem.travel_mode,
+          mode: mode,
           details : transitDetails
         }
         
