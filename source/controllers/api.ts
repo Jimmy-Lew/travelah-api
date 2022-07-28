@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import axios, { AxiosResponse } from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 import * as fs from "fs";
 
 const IConvertJSONToArray = () => {
@@ -300,6 +300,12 @@ const getRoute = async(
             }
           }
         }
+        else
+        {
+          transitDetails = {
+            to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
+          }
+        }
 
         const step = {
           distance: stepItem.distance.text,
@@ -401,11 +407,11 @@ const IGetBusTimings = async (busStopCode: String) => {
 };
 
 function secondsToHm(d : number) {
-  var h = Math.round(d / 3600);
-  var m = Math.round(d % 3600 / 60);
+  const h = Math.round(d / 3600);
+  const m = Math.round(d % 3600 / 60);
 
-  var hDisplay = h > 0 ? `${h}hr`: "";
-  var mDisplay = m > 0 ? `${m}min` : "";
+  const hDisplay = h > 0 ? `${h} hr `: "";
+  const mDisplay = m > 0 ? `${m} min` : "";
   return hDisplay + mDisplay; 
 }
 
