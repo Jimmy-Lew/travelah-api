@@ -404,8 +404,8 @@ function secondsToHm(d : number) {
   var h = Math.round(d / 3600);
   var m = Math.round(d % 3600 / 60);
 
-  var hDisplay = h > 0 ? h + (h == 1 ? " hr " : " hrs ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " min" : " mins") : "";
+  var hDisplay = h > 0 ? `${h}hr`: "";
+  var mDisplay = m > 0 ? `${m}min` : "";
   return hDisplay + mDisplay; 
 }
 
