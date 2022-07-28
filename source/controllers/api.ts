@@ -528,8 +528,8 @@ const IGetBusTimings = async (busStopCode: String) => {
 };
 
 function secondsToHm(d : number) {
-  const h = Math.round(d / 3600);
-  const m = Math.round(d % 3600 / 60);
+  const h = Math.floor(d / 3600);
+  const m = Math.floor(d % 3600 / 60);
 
   const hDisplay = h > 0 ? `${h} hr `: "";
   const mDisplay = m > 0 ? `${m} min` : "";
