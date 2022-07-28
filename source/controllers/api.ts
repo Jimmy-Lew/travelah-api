@@ -269,6 +269,19 @@ const getRoute = async(
         if (isTransit)
         {
           const transitDetailsRes = stepItem.transit_details
+          let type = transitDetailsRes.line.vehicle.type;
+          let name = transitDetailsRes.line.name;
+
+          if(transitDetailsRes.line.name.includes("Line")) 
+          {
+            type = "MRT";
+            name = name.slice(0,-5);
+          }
+          if(transitDetailsRes.line.name.includes("LRT"))
+          {
+            type = "LRT";
+            name = name.slice(0,-4);
+          }
 
           transitDetails = {
             arrTime: transitDetailsRes.arrival_time.text,
@@ -276,8 +289,8 @@ const getRoute = async(
             to: transitDetailsRes.arrival_stop.name,
             num_stops : transitDetailsRes.num_stops,
             line: {
-              name: transitDetailsRes.line.name,
-              type: transitDetailsRes.line.vehicle.type
+              name: name,
+              type: type
             }
           }
         }
