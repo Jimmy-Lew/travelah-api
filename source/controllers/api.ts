@@ -257,6 +257,7 @@ const getRoute = async(
 
   for (const routeItem of result.data.routes)
   {
+    let totalDuration = 0;
     legList = [];
     for (const legItem of routeItem.legs)
     { 
@@ -311,6 +312,8 @@ const getRoute = async(
         stepList.push(step);
       }
 
+      totalDuration += legItem.duration.value;
+
       const leg = {
         dptTime : legItem.departure_time.text,
         arrTime : legItem.arrival_time.text,
@@ -324,6 +327,7 @@ const getRoute = async(
     }
 
     const route = {
+      duration: secondsToHm(totalDuration),
       legs: legList
     }
 
@@ -395,6 +399,15 @@ const IGetBusTimings = async (busStopCode: String) => {
 
   return serviceList;
 };
+
+function secondsToHm(d : number) {
+  var h = Math.round(d / 3600);
+  var m = Math.round(d % 3600 / 60);
+
+  var hDisplay = h > 0 ? h + (h == 1 ? " hr " : " hrs ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " min" : " mins") : "";
+  return hDisplay + mDisplay; 
+}
 
 const search = (arr : string[][], n: number, target: string, targetIdx : number) => {
   if (arr[n-1][targetIdx] === target) return arr[n-1]
