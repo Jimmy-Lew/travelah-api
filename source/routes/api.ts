@@ -7,6 +7,7 @@ router.get("/timings/code", controller.getStopsByCode);
 router.get("/timings/name", controller.getStopsByName);
 router.get("/timings", controller.getBusTimings);
 router.get("/route", controller.getRoute);
+router.get("/route/name", controller.getRouteByName);
 router.get("/", controller.ping);
 
 export = router;
