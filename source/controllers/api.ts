@@ -482,7 +482,10 @@ const getBusStopName = async (
   let codeList = [];
 
   // @ts-ignore
+  if (!Array.isArray(query)) return res.status(200).json([IGetBusStopCode(query)])
+
   for (const stopName of query){
+  // @ts-ignore
     const stopCode = IGetBusStopCode(stopName);
     codeList.push(stopCode);
   }
