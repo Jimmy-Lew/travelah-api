@@ -320,9 +320,11 @@ const getRoute = async(
 
       totalDuration += legItem.duration.value;
 
+      const isSingleStep = stepList.length <= 1;
+
       const leg = {
-        dptTime : legItem.departure_time.text,
-        arrTime : legItem.arrival_time.text,
+        dptTime : !isSingleStep ? legItem.departure_time.text : "",
+        arrTime : !isSingleStep ? legItem.arrival_time.text : "",
         distance: legItem.distance.text,
         duration: legItem.duration.text,
         steps: stepList
@@ -441,9 +443,11 @@ const getRouteByName = async(
 
       totalDuration += legItem.duration.value;
 
+      const isSingleStep = stepList.length <= 1;
+
       const leg = {
-        dptTime : legItem.departure_time.text,
-        arrTime : legItem.arrival_time.text,
+        dptTime : !isSingleStep ? legItem.departure_time.text : "",
+        arrTime : !isSingleStep ? legItem.arrival_time.text : "",
         distance: legItem.distance.text,
         duration: legItem.duration.text,
         steps: stepList
@@ -465,6 +469,26 @@ const getRouteByName = async(
   return res.status(200).json(routeList)
 }
 // #endregion
+
+// #region Utility API
+const getBusStopName = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  const query = req.query.stops;
+
+  let codeList = [];
+
+  // @ts-ignore
+  for (const stopName of query){
+    const stopCode = IGetBusStopCode(stopName);
+    codeList.push(stopCode);
+  }
+
+  return res.status(200).json(codeList)
+}
 
 // #region Internal methods
 const IGetBusStopName = (busStopCode: string) => {
@@ -561,4 +585,4 @@ const ping = async(
 }
 // #endregion 
 
-export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, ping};
+export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, getBusStopName, ping};
