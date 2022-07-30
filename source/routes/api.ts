@@ -10,5 +10,6 @@ router.get("/route", controller.getRoute);
 router.get("/route/name", controller.getRouteByName);
 router.get("/", controller.ping);
 router.get("/util/code", controller.getBusStopName)
+router.get("/util/fare", controller.getFare)
 
 export = router;

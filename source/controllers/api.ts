@@ -15,11 +15,27 @@ const IConvertJSONToArray = () => {
 }
 
 const jsonArr = IConvertJSONToArray();
+// @ts-ignore
+const busFareTable = JSON.parse(fs.readFileSync("source/assets/bus_fares.json"))
 
-interface Location {
-  lat: number
-  lng: number
+const busFareOffset = {
+  adult : 60,
+  student : 30,
+  senior : 45,
+  workfare : 30,
+  disability : 45
 }
+
+const busFareTypes = {
+  adult : "adult_card_fare_per_ride",
+  student : "student_card_fare_per_ride",
+  senior : "senior_citizen_card_fare_per_ride",
+  workfare : "workfare_transport_concession_card_fare_per_ride",
+  disability : "persons_with_disabilities_card_fare_per_ride"
+}
+
+// @ts-ignore
+const mrtFareTable = JSON.parse(fs.readFileSync("source/assets/mrt_fares.json"))
 
 // #region Bus Timing API
 const getNearbyStops = async (
@@ -493,6 +509,53 @@ const getBusStopName = async (
   return res.status(200).json(codeList)
 }
 
+const getFare = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+
+  const query = req.query.trips;
+  const fType = req.query.fareType;
+
+  // @ts-ignore
+  const fareType = busFareTypes[fType]
+  // @ts-ignore
+  const offset = busFareOffset[fType]
+
+  let fareList = [];
+
+  if (!Array.isArray(query)) return res.status(200).json("Single query");
+  for (const trip of query){
+    // @ts-ignore
+    const [distance, tripType] = trip.split("_");
+
+    console.log(distance);
+
+    if (tripType == "BUS")
+    {
+      const id = Math.ceil(Math.abs(parseFloat(distance) - 2.2)) - 1;
+      const fareRecord = busFareTable[id];
+      const fare = fareRecord[fareType] - offset;
+      fareList.push(fare);
+    }
+
+    if (tripType == "MRT")
+    {
+      const isAdultFare = fType == "adult";
+      const id = Math.ceil(Math.abs(parseFloat(distance) - 2.2)) - 1 + (isAdultFare ? 39 : 0) ;
+      const fareRecord = mrtFareTable[id]
+      const fare = parseInt(fareRecord.fare_per_ride)
+      fareList.push(fare);
+    }
+  }
+
+  const totalFare = fareList.reduce((partial, current) => partial + current, 0)
+
+  return res.status(200).json(totalFare);
+}
+// #endregion
+
 // #region Internal methods
 const IGetBusStopName = (busStopCode: string) => {
   return search(jsonArr, jsonArr.length, busStopCode, 0)[1]
@@ -588,4 +651,4 @@ const ping = async(
 }
 // #endregion 
 
-export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, getBusStopName, ping};
+export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, getBusStopName, getFare, ping};

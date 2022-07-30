@@ -1,0 +1,392 @@
+[
+    {
+        "distance": "Up to 3.2 km",
+        "_id": 1,
+        "adult_card_fare_per_ride": "155",
+        "senior_citizen_card_fare_per_ride": "105",
+        "student_card_fare_per_ride": "73",
+        "persons_with_disabilities_card_fare_per_ride": "105",
+        "workfare_transport_concession_card_fare_per_ride": "119",
+        "cash_fare_per_ride": "250"
+    },
+    {
+        "distance": "3.3 km - 4.2 km",
+        "_id": 2,
+        "adult_card_fare_per_ride": "165",
+        "senior_citizen_card_fare_per_ride": "112",
+        "student_card_fare_per_ride": "78",
+        "persons_with_disabilities_card_fare_per_ride": "112",
+        "workfare_transport_concession_card_fare_per_ride": "127",
+        "cash_fare_per_ride": "250"
+    },
+    {
+        "distance": "4.3 km - 5.2 km",
+        "_id": 3,
+        "adult_card_fare_per_ride": "175",
+        "senior_citizen_card_fare_per_ride": "119",
+        "student_card_fare_per_ride": "83",
+        "persons_with_disabilities_card_fare_per_ride": "119",
+        "workfare_transport_concession_card_fare_per_ride": "135",
+        "cash_fare_per_ride": "250"
+    },
+    {
+        "distance": "5.3 km - 6.2 km",
+        "_id": 4,
+        "adult_card_fare_per_ride": "185",
+        "senior_citizen_card_fare_per_ride": "126",
+        "student_card_fare_per_ride": "88",
+        "persons_with_disabilities_card_fare_per_ride": "126",
+        "workfare_transport_concession_card_fare_per_ride": "143",
+        "cash_fare_per_ride": "250"
+    },
+    {
+        "distance": "6.3 km - 7.2 km",
+        "_id": 5,
+        "adult_card_fare_per_ride": "194",
+        "senior_citizen_card_fare_per_ride": "132",
+        "student_card_fare_per_ride": "91",
+        "persons_with_disabilities_card_fare_per_ride": "132",
+        "workfare_transport_concession_card_fare_per_ride": "150",
+        "cash_fare_per_ride": "250"
+    },
+    {
+        "distance": "7.3 km - 8.2 km",
+        "_id": 6,
+        "adult_card_fare_per_ride": "201",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "156",
+        "cash_fare_per_ride": "250"
+    },
+    {
+        "distance": "8.3 km - 9.2 km",
+        "_id": 7,
+        "adult_card_fare_per_ride": "207",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "162",
+        "cash_fare_per_ride": "265"
+    },
+    {
+        "distance": "9.3 km - 10.2 km",
+        "_id": 8,
+        "adult_card_fare_per_ride": "211",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "165",
+        "cash_fare_per_ride": "265"
+    },
+    {
+        "distance": "10.3 km - 11.2 km",
+        "_id": 9,
+        "adult_card_fare_per_ride": "215",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "168",
+        "cash_fare_per_ride": "265"
+    },
+    {
+        "distance": "11.3 km - 12.2 km",
+        "_id": 10,
+        "adult_card_fare_per_ride": "219",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "171",
+        "cash_fare_per_ride": "280"
+    },
+    {
+        "distance": "12.3 km - 13.2 km",
+        "_id": 11,
+        "adult_card_fare_per_ride": "223",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "174",
+        "cash_fare_per_ride": "280"
+    },
+    {
+        "distance": "13.3 km - 14.2 km",
+        "_id": 12,
+        "adult_card_fare_per_ride": "227",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "177",
+        "cash_fare_per_ride": "280"
+    },
+    {
+        "distance": "14.3 km - 15.2 km",
+        "_id": 13,
+        "adult_card_fare_per_ride": "232",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "180",
+        "cash_fare_per_ride": "280"
+    },
+    {
+        "distance": "15.3 km - 16.2 km",
+        "_id": 14,
+        "adult_card_fare_per_ride": "236",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "183",
+        "cash_fare_per_ride": "295"
+    },
+    {
+        "distance": "16.3 km - 17.2 km",
+        "_id": 15,
+        "adult_card_fare_per_ride": "240",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "186",
+        "cash_fare_per_ride": "295"
+    },
+    {
+        "distance": "17.3 km - 18.2 km",
+        "_id": 16,
+        "adult_card_fare_per_ride": "244",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "189",
+        "cash_fare_per_ride": "295"
+    },
+    {
+        "distance": "18.3 km - 19.2 km",
+        "_id": 17,
+        "adult_card_fare_per_ride": "248",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "192",
+        "cash_fare_per_ride": "295"
+    },
+    {
+        "distance": "19.3 km - 20.2 km",
+        "_id": 18,
+        "adult_card_fare_per_ride": "251",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "195",
+        "cash_fare_per_ride": "310"
+    },
+    {
+        "distance": "20.3 km - 21.2 km",
+        "_id": 19,
+        "adult_card_fare_per_ride": "254",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "198",
+        "cash_fare_per_ride": "310"
+    },
+    {
+        "distance": "21.3 km - 22.2 km",
+        "_id": 20,
+        "adult_card_fare_per_ride": "257",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "201",
+        "cash_fare_per_ride": "310"
+    },
+    {
+        "distance": "22.3 km - 23.2 km",
+        "_id": 21,
+        "adult_card_fare_per_ride": "260",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "204",
+        "cash_fare_per_ride": "310"
+    },
+    {
+        "distance": "23.3 km - 24.2 km",
+        "_id": 22,
+        "adult_card_fare_per_ride": "262",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "206",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "24.3 km - 25.2 km",
+        "_id": 23,
+        "adult_card_fare_per_ride": "264",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "207",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "25.3 km - 26.2 km",
+        "_id": 24,
+        "adult_card_fare_per_ride": "266",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "208",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "26.3 km - 27.2 km",
+        "_id": 25,
+        "adult_card_fare_per_ride": "267",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "209",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "27.3 km - 28.2 km",
+        "_id": 26,
+        "adult_card_fare_per_ride": "268",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "210",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "28.3 km - 29.2 km",
+        "_id": 27,
+        "adult_card_fare_per_ride": "269",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "211",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "29.3 km - 30.2 km",
+        "_id": 28,
+        "adult_card_fare_per_ride": "270",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "212",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "30.3 km - 31.2 km",
+        "_id": 29,
+        "adult_card_fare_per_ride": "271",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "213",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "31.3 km - 32.2 km",
+        "_id": 30,
+        "adult_card_fare_per_ride": "272",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "214",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "32.3 km - 33.2 km",
+        "_id": 31,
+        "adult_card_fare_per_ride": "273",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "215",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "33.3 km - 34.2 km",
+        "_id": 32,
+        "adult_card_fare_per_ride": "274",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "216",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "34.3 km - 35.2 km",
+        "_id": 33,
+        "adult_card_fare_per_ride": "275",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "217",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "35.3 km - 36.2 km",
+        "_id": 34,
+        "adult_card_fare_per_ride": "276",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "218",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "36.3 km - 37.2 km",
+        "_id": 35,
+        "adult_card_fare_per_ride": "277",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "219",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "37.3 km - 38.2 km",
+        "_id": 36,
+        "adult_card_fare_per_ride": "278",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "220",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "38.3 km - 39.2 km",
+        "_id": 37,
+        "adult_card_fare_per_ride": "279",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "221",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "39.3 km - 40.2 km",
+        "_id": 38,
+        "adult_card_fare_per_ride": "280",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "222",
+        "cash_fare_per_ride": "330"
+    },
+    {
+        "distance": "Over 40.2 km",
+        "_id": 39,
+        "adult_card_fare_per_ride": "281",
+        "senior_citizen_card_fare_per_ride": "138",
+        "student_card_fare_per_ride": "94",
+        "persons_with_disabilities_card_fare_per_ride": "138",
+        "workfare_transport_concession_card_fare_per_ride": "223",
+        "cash_fare_per_ride": "330"
+    }
+]

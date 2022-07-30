@@ -1,0 +1,429 @@
+[
+    {
+        "fare_per_ride": "170",
+        "distance": "Up to 3.2 km",
+        "fare_type": "Single trip",
+        "_id": 1,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "190",
+        "distance": "3.3 km - 4.2 km",
+        "fare_type": "Single trip",
+        "_id": 2,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "190",
+        "distance": "4.3 km - 5.2 km",
+        "fare_type": "Single trip",
+        "_id": 3,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "190",
+        "distance": "5.3 km - 6.2 km",
+        "fare_type": "Single trip",
+        "_id": 4,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "210",
+        "distance": "6.3 km - 7.2 km",
+        "fare_type": "Single trip",
+        "_id": 5,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "210",
+        "distance": "7.3 km - 8.2 km",
+        "fare_type": "Single trip",
+        "_id": 6,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "210",
+        "distance": "8.3 km - 9.2 km",
+        "fare_type": "Single trip",
+        "_id": 7,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "230",
+        "distance": "9.3 km - 10.2 km",
+        "fare_type": "Single trip",
+        "_id": 8,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "230",
+        "distance": "10.3 km - 11.2 km",
+        "fare_type": "Single trip",
+        "_id": 9,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "250",
+        "distance": "11.3 km - 12.2 km",
+        "fare_type": "Single trip",
+        "_id": 10,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "250",
+        "distance": "12.3 km - 13.2 km",
+        "fare_type": "Single trip",
+        "_id": 11,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "250",
+        "distance": "13.3 km - 14.2 km",
+        "fare_type": "Single trip",
+        "_id": 12,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "250",
+        "distance": "14.3 km - 15.2 km",
+        "fare_type": "Single trip",
+        "_id": 13,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "260",
+        "distance": "15.3 km - 16.2 km",
+        "fare_type": "Single trip",
+        "_id": 14,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "260",
+        "distance": "16.3 km - 17.2 km",
+        "fare_type": "Single trip",
+        "_id": 15,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "260",
+        "distance": "17.3 km - 18.2 km",
+        "fare_type": "Single trip",
+        "_id": 16,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "260",
+        "distance": "18.3 km - 19.2 km",
+        "fare_type": "Single trip",
+        "_id": 17,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "270",
+        "distance": "19.3 km - 20.2 km",
+        "fare_type": "Single trip",
+        "_id": 18,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "270",
+        "distance": "20.3 km - 21.2 km",
+        "fare_type": "Single trip",
+        "_id": 19,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "270",
+        "distance": "21.3 km - 22.2 km",
+        "fare_type": "Single trip",
+        "_id": 20,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "270",
+        "distance": "22.3 km - 23.2 km",
+        "fare_type": "Single trip",
+        "_id": 21,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "23.3 km - 24.2 km",
+        "fare_type": "Single trip",
+        "_id": 22,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "24.3 km - 25.2 km",
+        "fare_type": "Single trip",
+        "_id": 23,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "25.3 km - 26.2 km",
+        "fare_type": "Single trip",
+        "_id": 24,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "26.3 km - 27.2 km",
+        "fare_type": "Single trip",
+        "_id": 25,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "27.3 km - 28.2 km",
+        "fare_type": "Single trip",
+        "_id": 26,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "28.3 km - 29.2 km",
+        "fare_type": "Single trip",
+        "_id": 27,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "29.3 km - 30.2 km",
+        "fare_type": "Single trip",
+        "_id": 28,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "30.3 km - 31.2 km",
+        "fare_type": "Single trip",
+        "_id": 29,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "31.3 km - 32.2 km",
+        "fare_type": "Single trip",
+        "_id": 30,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "32.3 km - 33.2 km",
+        "fare_type": "Single trip",
+        "_id": 31,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "33.3 km - 34.2 km",
+        "fare_type": "Single trip",
+        "_id": 32,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "34.3 km - 35.2 km",
+        "fare_type": "Single trip",
+        "_id": 33,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "35.3 km - 36.2 km",
+        "fare_type": "Single trip",
+        "_id": 34,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "36.3 km - 37.2 km",
+        "fare_type": "Single trip",
+        "_id": 35,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "37.3 km - 38.2 km",
+        "fare_type": "Single trip",
+        "_id": 36,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "38.3 km - 39.2 km",
+        "fare_type": "Single trip",
+        "_id": 37,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "39.3 km - 40.2 km",
+        "fare_type": "Single trip",
+        "_id": 38,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "280",
+        "distance": "Over 40.2 km",
+        "fare_type": "Single trip",
+        "_id": 39,
+        "applicable_time": "All timings"
+    },
+    {
+        "fare_per_ride": "95",
+        "distance": "Up to 3.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 79,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "105",
+        "distance": "3.3 km - 4.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 80,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "115",
+        "distance": "4.3 km - 5.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 81,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "125",
+        "distance": "5.3 km - 6.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 82,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "134",
+        "distance": "6.3 km - 7.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 83,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "141",
+        "distance": "7.3 km - 8.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 84,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "147",
+        "distance": "8.3 km - 9.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 85,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "151",
+        "distance": "9.3 km - 10.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 86,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "155",
+        "distance": "10.3 km - 11.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 87,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "159",
+        "distance": "11.3 km - 12.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 88,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "163",
+        "distance": "12.3 km - 13.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 89,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "167",
+        "distance": "13.3 km - 14.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 90,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "172",
+        "distance": "14.3 km - 15.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 91,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "176",
+        "distance": "15.3 km - 16.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 92,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "180",
+        "distance": "16.3 km - 17.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 93,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "184",
+        "distance": "17.3 km - 18.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 94,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "188",
+        "distance": "18.3 km - 19.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 95,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "191",
+        "distance": "19.3 km - 20.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 96,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "194",
+        "distance": "20.3 km - 21.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 97,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "197",
+        "distance": "21.3 km - 22.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 98,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "200",
+        "distance": "22.3 km - 23.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 99,
+        "applicable_time": "All other timings"
+    },
+    {
+        "fare_per_ride": "202",
+        "distance": "23.3 km - 24.2 km",
+        "fare_type": "Adult card fare",
+        "_id": 100,
+        "applicable_time": "All other timings"
+    }
+]
