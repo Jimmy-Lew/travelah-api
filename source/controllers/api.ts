@@ -283,6 +283,7 @@ const getRoute = async(
         const isTransit = stepItem.travel_mode === "TRANSIT";
         let transitDetails = {};
         let mode = stepItem.travel_mode;
+        let distance = stepItem.distance.text;
 
         if (isTransit)
         {
@@ -321,10 +322,13 @@ const getRoute = async(
           transitDetails = {
             to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
           }
+
+          const isInKM = distance.slice(-2) === "km";
+          distance = isInKM ? distance : `0.0${distance.slice(0, 1)} km`
         }
 
         const step = {
-          distance: stepItem.distance.text,
+          distance: distance,
           duration: stepItem.duration.text,
           mode: mode,
           details : transitDetails
