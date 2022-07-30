@@ -525,12 +525,12 @@ const getFare = async (
 
   let fareList = [];
 
-  if (!Array.isArray(query)) return res.status(200).json("Single query");
-  for (const trip of query){
-    // @ts-ignore
-    const [distance, tripType] = trip.split("_");
+  if(!query) return res.status(404).json("missing trips query param")
+  if(!fType) return res.status(404).json("missing trip fare type query param")
 
-    console.log(distance);
+  if (!Array.isArray(query)) {
+    // @ts-ignore
+    const [distance, tripType] = query.split("_");
 
     if (tripType == "BUS")
     {
@@ -547,6 +547,29 @@ const getFare = async (
       const fareRecord = mrtFareTable[id]
       const fare = parseInt(fareRecord.fare_per_ride)
       fareList.push(fare);
+    }
+  }
+  else {
+    for (const trip of query){
+      // @ts-ignore
+      const [distance, tripType] = trip.split("_");
+  
+      if (tripType == "BUS")
+      {
+        const id = Math.ceil(Math.abs(parseFloat(distance) - 2.2)) - 1;
+        const fareRecord = busFareTable[id];
+        const fare = fareRecord[fareType] - offset;
+        fareList.push(fare);
+      }
+  
+      if (tripType == "MRT")
+      {
+        const isAdultFare = fType == "adult";
+        const id = Math.ceil(Math.abs(parseFloat(distance) - 2.2)) - 1 + (isAdultFare ? 39 : 0) ;
+        const fareRecord = mrtFareTable[id]
+        const fare = parseInt(fareRecord.fare_per_ride)
+        fareList.push(fare);
+      }
     }
   }
 
