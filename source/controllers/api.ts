@@ -550,7 +550,7 @@ const getFare = async (
     }
   }
 
-  const totalFare = fareList.reduce((partial, current) => partial + current, 0)
+  const totalFare = fareList.reduce((partial, current) => partial + current, 0).toString()
 
   return res.status(200).json(totalFare);
 }
