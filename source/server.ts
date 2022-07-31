@@ -1,4 +1,5 @@
-import https from "https";
+import http from "http";
+import https from "https"
 import express, { Express } from "express";
 import morgan from "morgan";
 import routes from "./routes/api";
@@ -38,7 +39,7 @@ router.use((req, res, next) => {
   });
 });
 
-const httpServer = https.createServer(router);
+const httpServer = http.createServer(router);
 const PORT: any = process.env.PORT ?? 3000;
 httpServer.listen(PORT, () =>
   console.log(`The server is running on port ${PORT}`)
