@@ -102,6 +102,8 @@ const getStopsByName = async (
 
   const query = req.query.stops;
 
+  if(!query) return res.status(404).json();
+
   if(Array.isArray(query))
   {  
     for (let name of query) {
