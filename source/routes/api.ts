@@ -8,6 +8,7 @@ router.get("/timings/name", controller.getStopsByName);
 router.get("/timings", controller.getBusTimings);
 router.get("/route", controller.getRoute);
 router.get("/route/name", controller.getRouteByName);
+router.get("/route/name_2", controller.getRouteByName2);
 router.get("/", controller.ping);
 router.get("/util/code", controller.getBusStopName)
 router.get("/util/fare", controller.getFare)

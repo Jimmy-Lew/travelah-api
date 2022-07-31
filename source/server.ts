@@ -31,7 +31,6 @@ router.use("/", routes);
 router.use((req, res, next) => {
   const error = new Error("not found");
 
-  // @ts-ignore
   return res.status(404).json({
     message: error.message,
     params: req.params,

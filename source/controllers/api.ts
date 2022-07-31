@@ -488,6 +488,124 @@ const getRouteByName = async(
 
   return res.status(200).json(routeList)
 }
+
+const getRouteByName2 = async(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+    // @ts-ignore
+    const origin = req.query.origin;
+    // @ts-ignore
+    const dest = req.query.destination;
+  
+    let result : AxiosResponse = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json`, {
+        params: {
+          origin: origin,
+          destination: dest,
+          key: "AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA",
+          alternatives: true,
+          mode: "transit",
+          units: "metric"
+        }
+      }
+    )
+  
+    let routeList : [] = [];
+    let legList : [] = [];
+    let stepList : [] = [];
+  
+    for (const routeItem of result.data.routes)
+    {
+      let totalDuration = 0;
+      legList = [];
+      for (const legItem of routeItem.legs)
+      { 
+        stepList = [];
+        for (const stepItem of legItem.steps)
+        {
+          const isTransit = stepItem.travel_mode === "TRANSIT";
+          let transitDetails = {};
+          let mode = stepItem.travel_mode;
+  
+          if (isTransit)
+          {
+            const transitDetailsRes = stepItem.transit_details
+            let type = transitDetailsRes.line.vehicle.type;
+            let name = transitDetailsRes.line.name;
+  
+            if(transitDetailsRes.line.name.includes("Line")) 
+            {
+              mode = "MRT";
+              name = name.slice(0,-5);
+            }
+            if(transitDetailsRes.line.name.includes("LRT"))
+            {
+              mode = "LRT";
+              name = name.slice(0,-4);
+            }
+            if(transitDetailsRes.line.vehicle.type === "BUS")
+            {
+              mode = "BUS";
+            }
+  
+            transitDetails = {
+              arrTime: transitDetailsRes.arrival_time.text,
+              from: transitDetailsRes.departure_stop.name,
+              to: transitDetailsRes.arrival_stop.name,
+              num_stops : transitDetailsRes.num_stops,
+              line: {
+                name: name,
+                type: type
+              }
+            }
+          }
+          else
+          {
+            transitDetails = {
+              to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
+            }
+          }
+  
+          const step = {
+            distance: stepItem.distance.text,
+            duration: stepItem.duration.text,
+            mode: mode,
+            details : transitDetails
+          }
+          
+          //@ts-ignore
+          stepList.push(step);
+        }
+  
+        totalDuration += legItem.duration.value;
+  
+        const isSingleStep = stepList.length <= 1;
+  
+        const leg = {
+          dptTime : !isSingleStep ? legItem.departure_time.text : "",
+          arrTime : !isSingleStep ? legItem.arrival_time.text : "",
+          distance: legItem.distance.text,
+          duration: legItem.duration.text,
+          steps: stepList
+        }
+  
+        //@ts-ignore
+        legList.push(leg);
+      }
+  
+      const route = {
+        duration: secondsToHm(totalDuration),
+        legs: legList
+      }
+  
+      // @ts-ignore
+      routeList.push(route);
+    }
+  
+    return res.status(200).json(routeList)
+}
 // #endregion
 
 // #region Utility API
@@ -678,4 +796,4 @@ const ping = async(
 }
 // #endregion 
 
-export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, getBusStopName, getFare, ping};
+export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, getRouteByName2, getBusStopName, getFare, ping};
