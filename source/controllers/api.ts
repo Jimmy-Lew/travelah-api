@@ -19,6 +19,7 @@ interface Service {
 }
 
 interface BusStop {
+  location?: any,
   name: string,
   code: string,
   serviceList: Service[]
@@ -97,7 +98,7 @@ const getStopsByName = async (
   res: Response,
   next: NextFunction
 ) => {
-  let busStops = [];
+  let busStops: BusStop[] = [];
 
   const query = req.query.stops;
 
@@ -109,10 +110,10 @@ const getStopsByName = async (
       const code = IGetBusStopCode(name.toString());
       const serviceList = await IGetBusTimings(code);
 
-      const busStop = {
-        name: name,
+      const busStop: BusStop = {
+        name: name.toString(),
         code: code,
-        serviceList: serviceList,
+        serviceList: !serviceList ? [] : serviceList,
       };
 
       busStops.push(busStop);
@@ -120,15 +121,16 @@ const getStopsByName = async (
   }
   else
   {
+    if(query?.toString() === "root") return res.status(200).json(busStops);
     const code = IGetBusStopCode(query?.toString() || "");
     if(code === "") return res.status(200).json("invalid stop name");
 
     const serviceList = await IGetBusTimings(code);
 
-    const busStop = {
-      name: query,
+    const busStop: BusStop = {
+      name: query?.toString() || "",
       code: code,
-      serviceList: serviceList,
+      serviceList: !serviceList ? [] : serviceList,
     };
 
     busStops.push(busStop);
