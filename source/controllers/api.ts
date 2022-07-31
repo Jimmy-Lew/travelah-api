@@ -2,9 +2,30 @@ import { Request, Response, NextFunction } from "express";
 import axios, { Axios, AxiosResponse } from "axios";
 import * as fs from "fs";
 
+interface Map<T> {
+  [key: string] : T
+}
+
+interface Bus {
+  estimatedTime: string,
+  load: string,
+  feature: string,
+  type: string
+}
+
+interface Service {
+  serviceNo: string,
+  busList: Bus[]
+}
+
+interface BusStop {
+  name: string,
+  code: string,
+  serviceList: Service[]
+}
+
 const IConvertJSONToArray = () => {
-  // @ts-ignore
-  const json = JSON.parse(fs.readFileSync("source/assets/stops.json"));
+  const json = JSON.parse(fs.readFileSync("source/assets/stops.json", "utf-8"));
   let result = []
 
   for (const busStop of json) {
@@ -15,10 +36,11 @@ const IConvertJSONToArray = () => {
 }
 
 const jsonArr = IConvertJSONToArray();
-// @ts-ignore
-const busFareTable = JSON.parse(fs.readFileSync("source/assets/bus_fares.json"))
 
-const busFareOffset = {
+const busFareTable = JSON.parse(fs.readFileSync("source/assets/bus_fares.json", "utf-8"))
+const mrtFareTable = JSON.parse(fs.readFileSync("source/assets/mrt_fares.json", "utf-8"))
+
+const busFareOffset : Map<number> = {
   adult : 60,
   student : 30,
   senior : 45,
@@ -26,16 +48,13 @@ const busFareOffset = {
   disability : 45
 }
 
-const busFareTypes = {
+const busFareTypes : Map<string> = {
   adult : "adult_card_fare_per_ride",
   student : "student_card_fare_per_ride",
   senior : "senior_citizen_card_fare_per_ride",
   workfare : "workfare_transport_concession_card_fare_per_ride",
   disability : "persons_with_disabilities_card_fare_per_ride"
 }
-
-// @ts-ignore
-const mrtFareTable = JSON.parse(fs.readFileSync("source/assets/mrt_fares.json"))
 
 // #region Bus Timing API
 const getNearbyStops = async (
@@ -52,12 +71,11 @@ const getNearbyStops = async (
     `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
   );
 
-  let busStops: [] = [];
+  let busStops = [];
 
   for (const item of result.data.results) {
     const code = IGetBusStopCode(item.name);
-
-    if (code === "") continue;
+    if (code === "" || code === "N") continue;
 
     const serviceList = await IGetBusTimings(code);
     
@@ -67,33 +85,28 @@ const getNearbyStops = async (
       code: code,
       serviceList: serviceList,
     };
-    // @ts-ignore
+
     busStops.push(busStop);
   }
 
-  return res.status(200).json(
-    busStops
-  );
-};
+  return res.status(200).json(busStops);
+}
 
 const getStopsByName = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  let busStops: [] = [];
+  let busStops = [];
 
-  // @ts-ignore
   const query = req.query.stops;
 
-  if(Array.isArray(query)){  
-    // @ts-ignore
+  if(Array.isArray(query))
+  {  
     for (let name of query) {
-      // @ts-ignore
       if(name === "root") continue;
 
-      // @ts-ignore
-      const code = IGetBusStopCode(name);
+      const code = IGetBusStopCode(name.toString());
       const serviceList = await IGetBusTimings(code);
 
       const busStop = {
@@ -101,31 +114,27 @@ const getStopsByName = async (
         code: code,
         serviceList: serviceList,
       };
-      // @ts-ignore
+
       busStops.push(busStop);
     }
   }
-  else{
-    // @ts-ignore
-    const code = IGetBusStopCode(query);
-    if(code === "") { }    
-    else {
-      // @ts-ignore
-      const serviceList = await IGetBusTimings(code);
+  else
+  {
+    const code = IGetBusStopCode(query?.toString() || "");
+    if(code === "") return res.status(200).json("invalid stop name");
 
-      const busStop = {
-        name: query,
-        code: code,
-        serviceList: serviceList,
-      };
-      // @ts-ignore
-      busStops.push(busStop);
-    }
+    const serviceList = await IGetBusTimings(code);
+
+    const busStop = {
+      name: query,
+      code: code,
+      serviceList: serviceList,
+    };
+
+    busStops.push(busStop);
   }
 
-  return res.status(200).json(
-    busStops,
-  );
+  return res.status(200).json(busStops);
 }
 
 const getStopsByCode = async (
@@ -133,46 +142,39 @@ const getStopsByCode = async (
   res: Response,
   next: NextFunction
 ) => {
-  let busStops: [] = [];
+  let busStops: BusStop[] = [];
 
-  // @ts-ignore
   const query = req.query.stops;
 
   if(Array.isArray(query)){
-    // @ts-ignore
     for (let code of query) {
-      // @ts-ignore
-      const name = IGetBusStopName(code);
-      // @ts-ignore
-      const serviceList = await IGetBusTimings(code);
+      const name = IGetBusStopName(code.toString());
+      const serviceList = await IGetBusTimings(code.toString());
 
-      const busStop = {
+      const busStop: BusStop = {
         name: name,
-        code: code,
-        serviceList: serviceList
+        code: code.toString(),
+        serviceList: serviceList?? []
       };
-      // @ts-ignore
+
       busStops.push(busStop);
     }
   }
   else{
-    // @ts-ignore
-    const name = IGetBusStopName(query);
-    // @ts-ignore
-    const serviceList = await IGetBusTimings(query);
+    if (!query) return;
+    const name = IGetBusStopName(query.toString());
+    const serviceList = await IGetBusTimings(query.toString());
 
-    const busStop = {
+    const busStop: BusStop = {
       name: name,
-      code: query,
-      serviceList: serviceList
+      code: query.toString(),
+      serviceList: serviceList?? []
     };
-    // @ts-ignore
+
     busStops.push(busStop);
   }
 
-  return res.status(200).json(
-    busStops,
-  );
+  return res.status(200).json(busStops);
 }
 
 const getBusTimings = async (
@@ -191,7 +193,8 @@ const getBusTimings = async (
     }
   );
 
-  let serviceList: [] = [];
+
+  let serviceList: Service[] = [];
 
   const services = result.data.Services;
 
@@ -199,7 +202,7 @@ const getBusTimings = async (
 
   services.forEach((item: any) => {
     const serviceNo = item.ServiceNo;
-    let busList: [] = [];
+    let busList: Bus[] = [];
     for (let i = 0; i < 3; i++) {
       const busNo = i <= 0 ? "NextBus" : `NextBus${i + 1}`;
       const resBus = item[busNo];
@@ -210,27 +213,26 @@ const getBusTimings = async (
       const estTimeInMinutes = Math.round((estimatedTime.getTime() - new Date().getTime()) / 60000)
       const estTime = estTimeInMinutes < 2 ? "Arr" : `${estTimeInMinutes} mins`;
 
-      const bus = {
+      const bus: Bus = {
         estimatedTime: estTime,
         load: resBus.Load,
         feature: resBus.Feature,
         type: resBus.Type,
       };
 
-      // @ts-ignore
       busList.push(bus);
     }
-    const service = {
+    const service: Service = {
       serviceNo: serviceNo,
       busList: busList,
     };
 
-    // @ts-ignore
     serviceList.push(service);
   });
 
   return res.status(200).json(serviceList);
-};
+}
+
 // #endregion
 
 // #region Routes API
@@ -239,10 +241,8 @@ const getRoute = async(
   res: Response,
   next: NextFunction
 ) => {
-  // @ts-ignore
-  const originStringArray = req.query.origin.split(",");
-  // @ts-ignore
-  const destinationStringArray = req.query.destination.split(",");
+  const originStringArray = req.query.origin?.toString().split(",") || "";
+  const destinationStringArray = req.query.destination?.toString().split(",") || "";
 
   const origin = {
     lat: originStringArray[0],
@@ -254,7 +254,7 @@ const getRoute = async(
     lng: destinationStringArray[1]
   }
 
-  let result : AxiosResponse = await axios.get(
+  const result : AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/directions/json`, {
       params: {
         origin: `${origin.lat} ${origin.lng}`,
@@ -267,101 +267,7 @@ const getRoute = async(
     }
   )
 
-  let routeList : [] = [];
-  let legList : [] = [];
-  let stepList : [] = [];
-
-  for (const routeItem of result.data.routes)
-  {
-    let totalDuration = 0;
-    legList = [];
-    for (const legItem of routeItem.legs)
-    { 
-      stepList = [];
-      for (const stepItem of legItem.steps)
-      {
-        const isTransit = stepItem.travel_mode === "TRANSIT";
-        let transitDetails = {};
-        let mode = stepItem.travel_mode;
-        let distance = stepItem.distance.text;
-
-        if (isTransit)
-        {
-          const transitDetailsRes = stepItem.transit_details
-          let type = transitDetailsRes.line.vehicle.type;
-          let name = transitDetailsRes.line.name;
-
-          if(transitDetailsRes.line.name.includes("Line")) 
-          {
-            mode = "MRT";
-            name = name.slice(0,-5);
-          }
-          if(transitDetailsRes.line.name.includes("LRT"))
-          {
-            mode = "LRT";
-            name = name.slice(0,-4);
-          }
-          if(transitDetailsRes.line.vehicle.type === "BUS")
-          {
-            mode = "BUS";
-          }
-
-          transitDetails = {
-            arrTime: transitDetailsRes.arrival_time.text,
-            from: transitDetailsRes.departure_stop.name,
-            to: transitDetailsRes.arrival_stop.name,
-            num_stops : transitDetailsRes.num_stops,
-            line: {
-              name: name,
-              type: type
-            }
-          }
-        }
-        else
-        {
-          transitDetails = {
-            to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
-          }
-
-          const isInKM = distance.slice(-2) === "km";
-          distance = isInKM ? distance : `0.0${distance.slice(0, 1)} km`
-        }
-
-        const step = {
-          distance: distance,
-          duration: stepItem.duration.text,
-          mode: mode,
-          details : transitDetails
-        }
-        
-        //@ts-ignore
-        stepList.push(step);
-      }
-
-      totalDuration += legItem.duration.value;
-
-      const isSingleStep = stepList.length <= 1;
-
-      const leg = {
-        dptTime : !isSingleStep ? legItem.departure_time.text : "",
-        arrTime : !isSingleStep ? legItem.arrival_time.text : "",
-        distance: legItem.distance.text,
-        duration: legItem.duration.text,
-        steps: stepList
-      }
-
-      //@ts-ignore
-      legList.push(leg);
-    }
-
-    const route = {
-      duration: secondsToHm(totalDuration),
-      legs: legList
-    }
-
-    // @ts-ignore
-    routeList.push(route);
-  }
+  const routeList = IGetRoutes(result.data.routes);
 
   return res.status(200).json(routeList)
 }
@@ -371,17 +277,15 @@ const getRouteByName = async(
   res: Response,
   next: NextFunction
 ) => {
-  // @ts-ignore
-  const originStringArray = req.query.origin.split(",");
-  // @ts-ignore
-  const dest = req.query.destination;
+  const originStringArray = req.query.origin?.toString().split(",") || "";
+  const dest = req.query.destination?.toString() || "";
 
   const origin = {
     lat: originStringArray[0],
     lng: originStringArray[1]
   }
 
-  let result : AxiosResponse = await axios.get(
+  const result : AxiosResponse = await axios.get(
     `https://maps.googleapis.com/maps/api/directions/json`, {
       params: {
         origin: `${origin.lat} ${origin.lng}`,
@@ -394,101 +298,7 @@ const getRouteByName = async(
     }
   )
 
-  let routeList : [] = [];
-  let legList : [] = [];
-  let stepList : [] = [];
-
-  for (const routeItem of result.data.routes)
-  {
-    let totalDuration = 0;
-    legList = [];
-    for (const legItem of routeItem.legs)
-    { 
-      stepList = [];
-      for (const stepItem of legItem.steps)
-      {
-        const isTransit = stepItem.travel_mode === "TRANSIT";
-        let transitDetails = {};
-        let mode = stepItem.travel_mode;
-        let distance = stepItem.distance.text;
-
-        if (isTransit)
-        {
-          const transitDetailsRes = stepItem.transit_details
-          let type = transitDetailsRes.line.vehicle.type;
-          let name = transitDetailsRes.line.name;
-
-          if(transitDetailsRes.line.name.includes("Line")) 
-          {
-            mode = "MRT";
-            name = name.slice(0,-5);
-          }
-          if(transitDetailsRes.line.name.includes("LRT"))
-          {
-            mode = "LRT";
-            name = name.slice(0,-4);
-          }
-          if(transitDetailsRes.line.vehicle.type === "BUS")
-          {
-            mode = "BUS";
-          }
-
-          transitDetails = {
-            arrTime: transitDetailsRes.arrival_time.text,
-            from: transitDetailsRes.departure_stop.name,
-            to: transitDetailsRes.arrival_stop.name,
-            num_stops : transitDetailsRes.num_stops,
-            line: {
-              name: name,
-              type: type
-            }
-          }
-        }
-        else
-        {
-          transitDetails = {
-            to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
-          }
-
-          const isInKM = distance.slice(-2) === "km";
-          distance = isInKM ? distance : `0.0${distance.slice(0, 1)} km`
-        }
-
-        const step = {
-          distance: distance,
-          duration: stepItem.duration.text,
-          mode: mode,
-          details : transitDetails
-        }
-        
-        //@ts-ignore
-        stepList.push(step);
-      }
-
-      totalDuration += legItem.duration.value;
-
-      const isSingleStep = stepList.length <= 1;
-
-      const leg = {
-        dptTime : !isSingleStep ? legItem.departure_time.text : "",
-        arrTime : !isSingleStep ? legItem.arrival_time.text : "",
-        distance: legItem.distance.text,
-        duration: legItem.duration.text,
-        steps: stepList
-      }
-
-      //@ts-ignore
-      legList.push(leg);
-    }
-
-    const route = {
-      duration: secondsToHm(totalDuration),
-      legs: legList
-    }
-
-    // @ts-ignore
-    routeList.push(route);
-  }
+  const routeList = IGetRoutes(result.data.routes);
 
   return res.status(200).json(routeList)
 }
@@ -498,12 +308,10 @@ const getRouteByName2 = async(
   res: Response,
   next: NextFunction
 ) => {
-    // @ts-ignore
-    const origin = req.query.origin;
-    // @ts-ignore
-    const dest = req.query.destination;
+    const origin = req.query.origin?.toString || "";
+    const dest = req.query.destination?.toString || "";
   
-    let result : AxiosResponse = await axios.get(
+    const result : AxiosResponse = await axios.get(
       `https://maps.googleapis.com/maps/api/directions/json`, {
         params: {
           origin: origin,
@@ -516,101 +324,7 @@ const getRouteByName2 = async(
       }
     )
   
-    let routeList : [] = [];
-    let legList : [] = [];
-    let stepList : [] = [];
-  
-    for (const routeItem of result.data.routes)
-    {
-      let totalDuration = 0;
-      legList = [];
-      for (const legItem of routeItem.legs)
-      { 
-        stepList = [];
-        for (const stepItem of legItem.steps)
-        {
-          const isTransit = stepItem.travel_mode === "TRANSIT";
-          let transitDetails = {};
-          let mode = stepItem.travel_mode;
-          let distance = stepItem.distance.text;
-  
-          if (isTransit)
-          {
-            const transitDetailsRes = stepItem.transit_details
-            let type = transitDetailsRes.line.vehicle.type;
-            let name = transitDetailsRes.line.name;
-  
-            if(transitDetailsRes.line.name.includes("Line")) 
-            {
-              mode = "MRT";
-              name = name.slice(0,-5);
-            }
-            if(transitDetailsRes.line.name.includes("LRT"))
-            {
-              mode = "LRT";
-              name = name.slice(0,-4);
-            }
-            if(transitDetailsRes.line.vehicle.type === "BUS")
-            {
-              mode = "BUS";
-            }
-  
-            transitDetails = {
-              arrTime: transitDetailsRes.arrival_time.text,
-              from: transitDetailsRes.departure_stop.name,
-              to: transitDetailsRes.arrival_stop.name,
-              num_stops : transitDetailsRes.num_stops,
-              line: {
-                name: name,
-                type: type
-              }
-            }
-          }
-          else
-          {
-            transitDetails = {
-              to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
-            }
-  
-            const isInKM = distance.slice(-2) === "km";
-            distance = isInKM ? distance : `0.0${distance.slice(0, 1)} km`
-          }
-  
-          const step = {
-            distance: distance,
-            duration: stepItem.duration.text,
-            mode: mode,
-            details : transitDetails
-          }
-          
-          //@ts-ignore
-          stepList.push(step);
-        }
-  
-        totalDuration += legItem.duration.value;
-  
-        const isSingleStep = stepList.length <= 1;
-  
-        const leg = {
-          dptTime : !isSingleStep ? legItem.departure_time.text : "",
-          arrTime : !isSingleStep ? legItem.arrival_time.text : "",
-          distance: legItem.distance.text,
-          duration: legItem.duration.text,
-          steps: stepList
-        }
-  
-        //@ts-ignore
-        legList.push(leg);
-      }
-  
-      const route = {
-        duration: secondsToHm(totalDuration),
-        legs: legList
-      }
-  
-      // @ts-ignore
-      routeList.push(route);
-    }
+    const routeList = IGetRoutes(result.data.routes);
   
     return res.status(200).json(routeList)
 }
@@ -627,12 +341,10 @@ const getBusStopName = async (
 
   let codeList = [];
 
-  // @ts-ignore
-  if (!Array.isArray(query)) return res.status(200).json([IGetBusStopCode(query)])
+  if (!Array.isArray(query)) return res.status(200).json([IGetBusStopCode(query?.toString() || "")])
 
   for (const stopName of query){
-  // @ts-ignore
-    const stopCode = IGetBusStopCode(stopName);
+    const stopCode = IGetBusStopCode(stopName.toString());
     codeList.push(stopCode);
   }
 
@@ -646,11 +358,9 @@ const getFare = async (
 ) => {
 
   const query = req.query.trips;
-  const fType = req.query.fareType;
+  const fType = req.query.fareType?.toString() || 'adult';
 
-  // @ts-ignore
   const fareType = busFareTypes[fType]
-  // @ts-ignore
   const offset = busFareOffset[fType]
 
   let fareList = [];
@@ -659,8 +369,7 @@ const getFare = async (
   if(!fType) return res.status(404).json("missing trip fare type query param")
 
   if (!Array.isArray(query)) {
-    // @ts-ignore
-    const [distance, tripType] = query.split("_");
+    const [distance, tripType] = query.toString().split("_");
 
     if (tripType == "BUS")
     {
@@ -681,8 +390,7 @@ const getFare = async (
   }
   else {
     for (const trip of query){
-      // @ts-ignore
-      const [distance, tripType] = trip.split("_");
+      const [distance, tripType] = trip.toString().split("_");
   
       if (tripType == "BUS")
       {
@@ -716,7 +424,106 @@ const IGetBusStopName = (busStopCode: string) => {
 
 const IGetBusStopCode = (busStopName: string) => {
   return search(jsonArr, jsonArr.length, busStopName, 1)[0]
+  // return jsonArr.find(busStop => busStop[1].some((name: string) => name === busStopName))
 };
+
+// TODO Implement interfaces for type checking
+const IGetRoutes = (routesResponse: any) => {
+  let routeList = [];
+  let legList = [];
+  let stepList = [];
+
+  for (const routeItem of routesResponse)
+  {
+    let totalDuration = 0;
+    legList = [];
+    for (const legItem of routeItem.legs)
+    { 
+      stepList = [];
+      for (const stepItem of legItem.steps)
+      {
+        const isTransit = stepItem.travel_mode === "TRANSIT";
+        let transitDetails = {};
+        let mode = stepItem.travel_mode;
+        let distance = stepItem.distance.text;
+
+        if (isTransit)
+        {
+          const transitDetailsRes = stepItem.transit_details
+          let type = transitDetailsRes.line.vehicle.type;
+          let name = transitDetailsRes.line.name;
+
+          if(transitDetailsRes.line.name.includes("Line")) 
+          {
+            mode = "MRT";
+            name = name.slice(0,-5);
+          }
+          if(transitDetailsRes.line.name.includes("LRT"))
+          {
+            mode = "LRT";
+            name = name.slice(0,-4);
+          }
+          if(transitDetailsRes.line.vehicle.type === "BUS")
+          {
+            mode = "BUS";
+          }
+
+          transitDetails = {
+            arrTime: transitDetailsRes.arrival_time.text,
+            from: transitDetailsRes.departure_stop.name,
+            to: transitDetailsRes.arrival_stop.name,
+            num_stops : transitDetailsRes.num_stops,
+            line: {
+              name: name,
+              type: type
+            }
+          }
+        }
+        else
+        {
+          transitDetails = {
+            to: stepItem.html_instructions.slice(8).replace(/, Singapore(?: \d{6})?/, "")
+          }
+
+          const isInKM = distance.slice(-2) === "km";
+          distance = isInKM ? distance : `0.0${distance.slice(0, 1)} km`
+        }
+
+        const step = {
+          distance: distance,
+          duration: stepItem.duration.text,
+          mode: mode,
+          details : transitDetails
+        }
+        
+        stepList.push(step);
+      }
+
+      totalDuration += legItem.duration.value;
+
+      const isSingleStep = stepList.length <= 1;
+
+      const leg = {
+        dptTime : !isSingleStep ? legItem.departure_time.text : "",
+        arrTime : !isSingleStep ? legItem.arrival_time.text : "",
+        distance: legItem.distance.text,
+        duration: legItem.duration.text,
+        steps: stepList
+      }
+
+      legList.push(leg);
+    }
+
+    const route = {
+      duration: secondsToHm(totalDuration),
+      legs: legList
+    }
+
+    routeList.push(route);
+  }
+
+  return routeList;
+}
 
 const IGetBusTimings = async (busStopCode: String) => {
   if (busStopCode.length <= 0) return;
@@ -730,7 +537,7 @@ const IGetBusTimings = async (busStopCode: String) => {
     }
   );
 
-  let serviceList: [] = [];
+  let serviceList: Service[] = [];
 
   const services = result.data.Services;
 
@@ -738,7 +545,7 @@ const IGetBusTimings = async (busStopCode: String) => {
 
   services.forEach((item: any) => {
     const serviceNo = item.ServiceNo;
-    let busList: [] = [];
+    let busList: Bus[] = [];
     for (let i = 0; i < 3; i++) {
       const busNo = i <= 0 ? "NextBus" : `NextBus${i + 1}`;
       const resBus = item[busNo];
@@ -748,22 +555,20 @@ const IGetBusTimings = async (busStopCode: String) => {
       const estTimeInMinutes = Math.round((estimatedTime.getTime() - new Date().getTime()) / 60000)
       const estTime = estTimeInMinutes < 2 ? "Arr" : `${estTimeInMinutes} mins`;
 
-      const bus = {
+      const bus: Bus = {
         estimatedTime: estTime,
         load: resBus.Load,
         feature: resBus.Feature,
         type: resBus.Type,
       };
 
-      // @ts-ignore
       busList.push(bus);
     }
-    const service = {
+    const service: Service = {
       serviceNo: serviceNo,
       busList: busList,
     };
 
-    // @ts-ignore
     serviceList.push(service);
   });
 
@@ -799,7 +604,6 @@ const ping = async(
   next: NextFunction
 ) => {
   const msg = Date.now() + " Ping Received"
-  console.log(msg);
   return res.status(200).json(msg)
 }
 // #endregion 
