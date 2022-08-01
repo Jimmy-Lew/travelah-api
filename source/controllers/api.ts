@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import axios, { Axios, AxiosResponse } from "axios";
 import * as fs from "fs";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 interface Map<T> {
   [key: string] : T
@@ -69,7 +72,7 @@ const getNearbyStops = async (
   };
 
   let result: AxiosResponse = await axios.get(
-    `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=AIzaSyCnu98m6eMKGjpCfOfSMHFfa2bwbPZ0UcI`
+    `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=bus+stop&location=${location.lat}%2C${location.lng}&radius=150&type=[transit_station,bus_station]&key=${process.env.PLACES_KEY}`
   );
 
   let busStops = [];
@@ -192,7 +195,7 @@ const getBusTimings = async (
     `http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${busStopCode}`,
     {
       headers: {
-        AccountKey: "RdoZ93saQ32Ts1JcHbFegg==",
+        AccountKey: process.env.LTA_KEY?.toString() || "",
       },
     }
   );
@@ -263,7 +266,7 @@ const getRoute = async(
       params: {
         origin: `${origin.lat} ${origin.lng}`,
         destination: `${dest.lat} ${dest.lng}`,
-        key: "AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA",
+        key: process.env.DIRECTIONS_KEY,
         alternatives: true,
         mode: "transit",
         units: "metric"
@@ -294,7 +297,7 @@ const getRouteByName = async(
       params: {
         origin: `${origin.lat} ${origin.lng}`,
         destination: dest,
-        key: "AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA",
+        key: process.env.DIRECTIONS_KEY,
         alternatives: true,
         mode: "transit",
         units: "metric"
@@ -320,7 +323,7 @@ const getRouteByName2 = async(
         params: {
           origin: origin,
           destination: dest,
-          key: "AIzaSyBxhW9bm2Dissqi9ajYrN0bq6qAP69RRpA",
+          key: process.env.DIRECTIONS_KEY,
           alternatives: true,
           mode: "transit",
           units: "metric"
@@ -536,7 +539,7 @@ const IGetBusTimings = async (busStopCode: String) => {
     `http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=${busStopCode}`,
     {
       headers: {
-        AccountKey: "RdoZ93saQ32Ts1JcHbFegg==",
+        AccountKey: process.env.LTA_KEY?.toString() || "",
       },
     }
   );
