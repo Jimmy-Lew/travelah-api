@@ -1,46 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import axios, { Axios, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import * as fs from "fs";
 import dotenv from 'dotenv';
+import { BusStop, Service, Bus, Route, Leg, Step, Details, Line, Mode, Map, JSONObject, JSONArray } from '../types'
 
 dotenv.config();
 
-interface Map<T> {
-  [key: string] : T
-}
-
-interface Bus {
-  estimatedTime: string,
-  load: string,
-  feature: string,
-  type: string
-}
-
-interface Service {
-  serviceNo: string,
-  busList: Bus[]
-}
-
-interface BusStop {
-  location?: any,
-  name: string,
-  code: string,
-  serviceList: Service[]
-}
-
-const IConvertJSONToArray = () => {
-  const json = JSON.parse(fs.readFileSync("source/assets/stops.json", "utf-8"));
-  let result = []
-
-  for (const busStop of json) {
-    result.push([busStop.number, busStop.name])
-  }
-
-  return result
-}
-
-const jsonArr = IConvertJSONToArray();
-
+const busStops = JSON.parse(fs.readFileSync("source/assets/stops.json", "utf-8"));
 const busFareTable = JSON.parse(fs.readFileSync("source/assets/bus_fares.json", "utf-8"))
 const mrtFareTable = JSON.parse(fs.readFileSync("source/assets/mrt_fares.json", "utf-8"))
 
@@ -200,7 +166,6 @@ const getBusTimings = async (
     }
   );
 
-
   let serviceList: Service[] = [];
 
   const services = result.data.Services;
@@ -229,6 +194,7 @@ const getBusTimings = async (
 
       busList.push(bus);
     }
+
     const service: Service = {
       serviceNo: serviceNo,
       busList: busList,
@@ -279,7 +245,7 @@ const getRoute = async(
   return res.status(200).json(routeList)
 }
 
-const getRouteByName = async(
+const getRouteByDestinationName = async(
   req: Request,
   res: Response,
   next: NextFunction
@@ -310,7 +276,7 @@ const getRouteByName = async(
   return res.status(200).json(routeList)
 }
 
-const getRouteByName2 = async(
+const getRouteByName = async(
   req: Request,
   res: Response,
   next: NextFunction
@@ -425,20 +391,18 @@ const getFare = async (
 // #endregion
 
 // #region Internal methods
-const IGetBusStopName = (busStopCode: string) => {
-  return search(jsonArr, jsonArr.length, busStopCode, 0)[1]
+const IGetBusStopName = (busStopCode: string): string => {
+  return busStops.find((busStop: JSONObject) => busStop.code === busStopCode).name
 };
 
-const IGetBusStopCode = (busStopName: string) => {
-  return search(jsonArr, jsonArr.length, busStopName, 1)[0]
-  // return jsonArr.find(busStop => busStop[1].some((name: string) => name === busStopName))
+const IGetBusStopCode = (busStopName: string): string => {
+  return busStops.find((busStop: JSONObject) => busStop.name === busStopName).code
 };
 
-// TODO Implement interfaces for type checking
-const IGetRoutes = (routesResponse: any) => {
-  let routeList = [];
-  let legList = [];
-  let stepList = [];
+const IGetRoutes = (routesResponse: any): Route[] => {
+  let routeList: Route[] = [];
+  let legList: Leg[] = [];
+  let stepList: Step[] = [];
 
   for (const routeItem of routesResponse)
   {
@@ -450,8 +414,8 @@ const IGetRoutes = (routesResponse: any) => {
       for (const stepItem of legItem.steps)
       {
         const isTransit = stepItem.travel_mode === "TRANSIT";
-        let transitDetails = {};
-        let mode = stepItem.travel_mode;
+        let transitDetails: Details;
+        let mode: Mode = Mode.WALKING;
         let distance = stepItem.distance.text;
 
         if (isTransit)
@@ -462,17 +426,22 @@ const IGetRoutes = (routesResponse: any) => {
 
           if(transitDetailsRes.line.name.includes("Line")) 
           {
-            mode = "MRT";
+            mode = Mode.MRT;
             name = name.slice(0,-5);
           }
           if(transitDetailsRes.line.name.includes("LRT"))
           {
-            mode = "LRT";
+            mode = Mode.LRT;
             name = name.slice(0,-4);
           }
           if(transitDetailsRes.line.vehicle.type === "BUS")
           {
-            mode = "BUS";
+            mode = Mode.BUS;
+          }
+
+          const line: Line = {
+            name: name,
+            type: type
           }
 
           transitDetails = {
@@ -480,10 +449,7 @@ const IGetRoutes = (routesResponse: any) => {
             from: transitDetailsRes.departure_stop.name,
             to: transitDetailsRes.arrival_stop.name,
             num_stops : transitDetailsRes.num_stops,
-            line: {
-              name: name,
-              type: type
-            }
+            line: line
           }
         }
         else
@@ -496,7 +462,7 @@ const IGetRoutes = (routesResponse: any) => {
           distance = isInKM ? distance : `0.0${distance.slice(0, 1)} km`
         }
 
-        const step = {
+        const step: Step = {
           distance: distance,
           duration: stepItem.duration.text,
           mode: mode,
@@ -510,7 +476,7 @@ const IGetRoutes = (routesResponse: any) => {
 
       const isSingleStep = stepList.length <= 1;
 
-      const leg = {
+      const leg: Leg = {
         dptTime : !isSingleStep ? legItem.departure_time.text : "",
         arrTime : !isSingleStep ? legItem.arrival_time.text : "",
         distance: legItem.distance.text,
@@ -521,7 +487,7 @@ const IGetRoutes = (routesResponse: any) => {
       legList.push(leg);
     }
 
-    const route = {
+    const route: Route = {
       duration: secondsToHm(totalDuration),
       legs: legList
     }
@@ -532,7 +498,7 @@ const IGetRoutes = (routesResponse: any) => {
   return routeList;
 }
 
-const IGetBusTimings = async (busStopCode: String) => {
+const IGetBusTimings = async (busStopCode: String): Promise<Service[] | undefined>  => {
   if (busStopCode.length <= 0) return;
 
   let result: AxiosResponse = await axios.get(
@@ -591,28 +557,14 @@ function secondsToHm(d : number) {
   return hDisplay + mDisplay; 
 }
 
-const search = (arr : string[][], n: number, target: string, targetIdx : number) => {
-  if (arr[n-1][targetIdx] === target) return arr[n-1]
-  const backup = arr[n-1]
-  arr[n-1][targetIdx] = target
-
-  for (let i = 0;; i++) {
-    if (arr[i][targetIdx] === target) {
-      arr[n-1] = backup;
-      if (i < n - 1) return arr[i]
-      return "Not Found"
-    }
-  }
-}
-
 const ping = async(
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const msg = Date.now() + " Ping Received"
+  const msg = `${Date.now().toString()} Ping Received`
   return res.status(200).json(msg)
 }
 // #endregion 
 
-export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByName, getRouteByName2, getBusStopName, getFare, ping};
+export default { getNearbyStops, getBusTimings, getStopsByName, getStopsByCode, getRoute, getRouteByDestinationName, getRouteByName, getBusStopName, getFare, ping};
